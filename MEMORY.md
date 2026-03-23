@@ -49,10 +49,10 @@ Chad wants intelligent model routing with predictable costs:
 
 ## Group Chat Rules (set 2026-03-21, updated 2026-03-22)
 
-- **"Social Media" Telegram group** (`-5080274188`) = social media topics only.
-- If Chad brings up social media in any other chat/DM, redirect him to the Social Media group.
+- **"Social Media" Telegram group** (`-5080274188`) is the default shared thread for social media topics.
 - **Telegram group chats** require tag trigger (`@panda123321_bot`) before responding.
-- Exception: Karina is approved for direct 1:1 social workflow in Telegram (no group redirect needed there).
+- Direct Telegram DMs are allowed for focused 1:1 social execution (Karina and client-specific bot DMs).
+- Only redirect when Chad explicitly wants social discussion moved back into the shared Social Media group.
 
 ## Telegram Client Separation Pattern (set 2026-03-23)
 

@@ -46,6 +46,7 @@ Maintainer: Panda
 - [ ] Confirm tomorrow's first priority in Kepter app polish
 - [ ] Choose first reliability fix to execute now: qmd repair, gateway allowlist cleanup, or full skill hygiene pass (`canvas` frontmatter + `skill-creator` dead refs)
 - [ ] Decide whether to include `skill-creator` docs/validator alignment and `__pycache__` cleanup in the same skills maintenance pass
+- [ ] Decide whether to include `gh-issues` dependency-contract cleanup (`gh` requirement vs curl-only claim) in the same skills pass
 - [ ] Decide whether to install missing CLI deps (`rg`, `jq`, optional `python`) or keep checks/scripts dependency-light
 - [ ] Decide whether Slack scope cleanup is needed now or deferred (current behavior recovers but warns `missing_scope`)
 - [ ] Confirm Telegram bot token rotation after memory redaction event
