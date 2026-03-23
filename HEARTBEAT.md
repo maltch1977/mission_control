@@ -7,7 +7,8 @@
 - Identify anything that could be improved (config, workflow, memory, skills)
 - Spawn multiple sub-agents in parallel to investigate and implement fixes
 - Update `CONTROL_TOWER.md` with current status, blockers, and next actions
-- Update `IDEAS_BACKLOG.md` with new concept ideas and discussion prompts
+- Review `IDEA_INBOX.md`, promote items into `IDEAS_BACKLOG.md`, and keep statuses current
+- Ask Chad focused follow-up questions on the top unresolved ideas (one at a time, high leverage first)
 - Report back with what was found and what was done
 
 ### How to run parallel sub-agents

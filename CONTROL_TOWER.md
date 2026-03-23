@@ -7,7 +7,7 @@ Maintainer: Panda
 ## How to use this page
 - This is the single high-level dashboard for current work.
 - Check `Now`, `Waiting on Chad`, and `Next 24h` first.
-- For concept topics, open `IDEAS_BACKLOG.md`.
+- For concept topics, open `IDEA_INBOX.md` (capture) and `IDEAS_BACKLOG.md` (tracked).
 - Status labels:
   - [ ] Not started
   - [~] In progress
