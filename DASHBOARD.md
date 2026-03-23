@@ -25,7 +25,7 @@ Drop raw thoughts here. No formatting required.
 Action items only. Clear and concrete.
 
 - [ ] Confirm merge path for `openclaw-workers` branch into `main`
-- [ ] Confirm first priority for Kepter app polish tomorrow
+- [ ] Pick first fix to apply now: gateway config cleanup, qmd repair, or skills patch (`canvas`/`model-usage`)
 - [ ] Decide subscription tracker home: Google Sheet or Notion
 
 ---
@@ -42,6 +42,14 @@ Action items only. Clear and concrete.
 - Idea Inbox: `IDEA_INBOX.md`
 - Ideas Backlog: `IDEAS_BACKLOG.md`
 - Worker repo local path: `/home/chad/.openclaw/workspace/openclaw-workers`
+
+---
+
+## 6) Update Rules
+- Chad can add to Brain Dump anytime.
+- Panda updates Activity Log and Panda Needs during heartbeat cycles.
+- Completed Panda Needs items get checked off and moved into Activity Log.
+claw-workers`
 
 ---
 

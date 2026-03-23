@@ -80,6 +80,8 @@ Maintainer: Panda
 - Slack social routing behavior was inconsistent in prior setup
 - Notion can become overhead if over-managed
 - Memory search via qmd had module-path failures and needs repair
+- Gateway coding allowlist has unknown entries and generates repetitive warning noise
+- Skill quality drift detected (`canvas` missing frontmatter, `model-usage` contains Linux TODO + frontmatter spec drift)
 
 ---
 
