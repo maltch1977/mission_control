@@ -18,6 +18,7 @@ Use this section as a rolling log of what we discussed and what changed.
 - [2026-03-23] Heartbeat 07:46 UTC: gateway healthy again with no outage; memory consolidated with Kepter/Wispr context; skills still blocked mainly by missing `canvas` frontmatter (plus minor script executable nits).
 - [2026-03-23] Heartbeat 08:46 UTC: gateway still healthy but qmd update errors are recurring; allowlist warning noise persists; Slack shows missing-scope warnings; skills audit still points to `canvas` frontmatter + skill schema-doc drift.
 - [2026-03-23] Heartbeat 09:46 UTC: gateway still stable with no fresh crashes; warning noise from coding allowlist persists; memory remains clean; skills audit found `canvas` still unloadable plus dead references in `skill-creator` and packaged `__pycache__` clutter.
+- [2026-03-23] Heartbeat 11:46 UTC: gateway still healthy with warning noise only; memory cleanup removed a redundant section; skills audit confirms `canvas` frontmatter is still the primary structural blocker.
 
 ---
 

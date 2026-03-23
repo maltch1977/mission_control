@@ -93,10 +93,14 @@ Maintainer: Panda
 ## Parking lot
 - AI click-testing system for app flows (deferred until after release polish)
 - Full custom dashboard UI beyond Notion (after core pipeline is stable)
+ng system for app flows (deferred until after release polish)
+- Full custom dashboard UI beyond Notion (after core pipeline is stable)
 pts/frame.sh`)
 
 ---
 
 ## Parking lot
 - AI click-testing system for app flows (deferred until after release polish)
+- Full custom dashboard UI beyond Notion (after core pipeline is stable)
+il after release polish)
 - Full custom dashboard UI beyond Notion (after core pipeline is stable)
