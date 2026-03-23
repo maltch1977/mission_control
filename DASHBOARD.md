@@ -28,6 +28,7 @@ Use this section as a rolling log of what we discussed and what changed.
 - [2026-03-23] Heartbeat 20:04 UTC: gateway remains healthy but qmd failures keep recurring; memory policy was tightened to remove stale social-routing friction; skills audit still confirms `canvas` frontmatter as the main hard blocker.
 - [2026-03-23] Heartbeat 21:04 UTC: gateway remains healthy but qmd failures continue as P0; memory stayed clean with no extra edits; skills audit reconfirmed `canvas` frontmatter issue and flagged outstanding TODO/WIP skill docs (`model-usage`, `ordercli`).
 - [2026-03-23] Heartbeat 22:04 UTC: gateway remains healthy while qmd failures and allowlist warning noise persist; memory stayed clean with only optional note-trimming; skills audit again confirms `canvas` frontmatter as the only hard structural blocker.
+- [2026-03-23] Heartbeat 23:04 UTC: gateway still healthy with no new severe events; qmd failures remain P0, allowlist warning noise persists, memory stayed clean, and skills audit again confirmed `canvas` frontmatter as the primary structural blocker.
 
 ---
 
