@@ -44,7 +44,7 @@ Maintainer: Panda
 ## Waiting on Chad
 - [ ] Confirm merge path for `openclaw-workers` (`feat/worker-pipeline-v1` -> `main`)
 - [ ] Confirm tomorrow's first priority in Kepter app polish
-- [ ] Choose first reliability fix to execute now: qmd repair, gateway allowlist cleanup, or `canvas` skill frontmatter patch
+- [ ] Choose first reliability fix to execute now: qmd repair, gateway allowlist cleanup, or full skill hygiene pass (`canvas` frontmatter + `skill-creator` dead refs)
 - [ ] Decide whether Slack scope cleanup is needed now or deferred (current behavior recovers but warns `missing_scope`)
 - [ ] Decide if subscription tracker should be Google Sheet or Notion table
 
@@ -87,6 +87,13 @@ Maintainer: Panda
 - `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
 - Skill schema-doc drift: current production skills use extra frontmatter fields while `skill-creator` guidance implies strict `name` + `description`
 - Minor skill script hygiene issue: two script files have shebangs but are not executable (`openai-whisper-api/scripts/transcribe.sh`, `video-frames/scripts/frame.sh`)
+
+---
+
+## Parking lot
+- AI click-testing system for app flows (deferred until after release polish)
+- Full custom dashboard UI beyond Notion (after core pipeline is stable)
+pts/frame.sh`)
 
 ---
 
