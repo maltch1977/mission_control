@@ -44,6 +44,7 @@ Maintainer: Panda
 ## Waiting on Chad
 - [ ] Confirm merge path for `openclaw-workers` (`feat/worker-pipeline-v1` -> `main`)
 - [ ] Confirm tomorrow's first priority in Kepter app polish
+- [ ] Choose first reliability fix to execute now: gateway allowlist cleanup, qmd repair, or `canvas` skill frontmatter patch
 - [ ] Decide if subscription tracker should be Google Sheet or Notion table
 
 ---

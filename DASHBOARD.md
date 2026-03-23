@@ -11,6 +11,9 @@ Use this section as a rolling log of what we discussed and what changed.
 - [2026-03-23] Added visual-production-planner worker with Presence Mode and founder face requirements.
 - [2026-03-23] Added playbooks, templates, and command layer for Telegram-style workflows.
 - [2026-03-23] Created control files: `CONTROL_TOWER.md`, `IDEAS_BACKLOG.md`, `IDEA_INBOX.md`.
+- [2026-03-23] Heartbeat review rerun: gateway healthy, no new errors; recurring warning noise still present (`apply_patch`, `cron` allowlist entries).
+- [2026-03-23] Memory maintenance pass completed: clarified Telegram social workflow and preserved Notion API limitations in long-term memory.
+- [2026-03-23] Skills audit reconfirmed one structural issue: `canvas/SKILL.md` missing YAML frontmatter.
 
 ---
 
@@ -42,14 +45,6 @@ Action items only. Clear and concrete.
 - Idea Inbox: `IDEA_INBOX.md`
 - Ideas Backlog: `IDEAS_BACKLOG.md`
 - Worker repo local path: `/home/chad/.openclaw/workspace/openclaw-workers`
-
----
-
-## 6) Update Rules
-- Chad can add to Brain Dump anytime.
-- Panda updates Activity Log and Panda Needs during heartbeat cycles.
-- Completed Panda Needs items get checked off and moved into Activity Log.
-claw-workers`
 
 ---
 

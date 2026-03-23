@@ -30,8 +30,21 @@ Chad wants intelligent model routing with predictable costs:
 
 - Never use em dashes in any assistant reply or generated copy.
 
-## Group Chat Rules (set 2026-03-21)
+## Operational Lessons (from 2026-03-22)
 
-- **"Social Media" Telegram group** (`-5080274188`) = social media topics only
-- If Chad brings up social media in any other chat/DM, redirect him to the Social Media group
-- Must be tagged (`@panda123321_bot`) to respond in group chats
+- Anthropic API can hit 30k TPM during long sessions; keep Kimi routing available for automatic fallback and cost control.
+- Main chat model is now Codex (`openai-codex/gpt-5.3-codex`) after OAuth onboarding; do not revert memory defaults to Sonnet.
+- `memory_search` with QMD had recurring missing module-path failures (`.../qmd/dist/cli/qmd.js`); treat memory retrieval as partially unreliable until fixed.
+- Notion API cannot fully auto-create filtered linked database views; expect manual filter setup for dashboard variants.
+
+## Social Workflow (set 2026-03-22)
+
+- Day-to-day social execution moved from Slack to Telegram to reduce friction.
+- Karina is approved for direct 1:1 social workflow in Telegram.
+
+## Group Chat Rules (set 2026-03-21, updated 2026-03-22)
+
+- **"Social Media" Telegram group** (`-5080274188`) = social media topics only.
+- If Chad brings up social media in any other chat/DM, redirect him to the Social Media group.
+- **Telegram group chats** require tag trigger (`@panda123321_bot`) before responding.
+- Exception: Karina is approved for direct 1:1 social workflow in Telegram (no group redirect needed there).
