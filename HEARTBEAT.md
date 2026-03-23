@@ -6,6 +6,7 @@
 - Review recent mistakes, issues, or friction points from the last session
 - Identify anything that could be improved (config, workflow, memory, skills)
 - Spawn multiple sub-agents in parallel to investigate and implement fixes
+- Update `DASHBOARD.md` (Activity Log + Panda Needs From Chad)
 - Update `CONTROL_TOWER.md` with current status, blockers, and next actions
 - Review `IDEA_INBOX.md`, promote items into `IDEAS_BACKLOG.md`, and keep statuses current
 - Ask Chad focused follow-up questions on the top unresolved ideas (one at a time, high leverage first)
