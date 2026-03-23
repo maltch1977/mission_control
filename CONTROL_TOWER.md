@@ -83,6 +83,7 @@ Maintainer: Panda
 - Memory search via qmd had module-path failures and needs repair
 - Gateway coding allowlist has unknown entries and generates repetitive warning noise
 - Skill quality drift detected (`canvas` missing frontmatter, `model-usage` contains Linux TODO + frontmatter spec drift)
+- `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
 
 ---
 
