@@ -45,6 +45,8 @@ Maintainer: Panda
 - [ ] Confirm merge path for `openclaw-workers` (`feat/worker-pipeline-v1` -> `main`)
 - [ ] Confirm tomorrow's first priority in Kepter app polish
 - [ ] Choose first reliability fix to execute now: qmd repair, gateway allowlist cleanup, or full skill hygiene pass (`canvas` frontmatter + `skill-creator` dead refs)
+- [ ] Decide whether to include `skill-creator` docs/validator alignment and `__pycache__` cleanup in the same skills maintenance pass
+- [ ] Decide whether to install missing CLI deps (`rg`, optional python) or keep checks/scripts dependency-light
 - [ ] Decide whether Slack scope cleanup is needed now or deferred (current behavior recovers but warns `missing_scope`)
 - [ ] Decide if subscription tracker should be Google Sheet or Notion table
 
@@ -83,7 +85,8 @@ Maintainer: Panda
 - Notion can become overhead if over-managed
 - Memory search via qmd had module-path failures and needs repair (now recurring during live gateway updates, not just historical)
 - Gateway coding allowlist has unknown entries and generates repetitive warning noise
-- Skill quality drift detected (`canvas` missing frontmatter, `model-usage` contains Linux TODO + frontmatter spec drift)
+- Skill quality drift detected (`canvas` missing frontmatter; `model-usage` previously flagged for Linux TODO + frontmatter spec drift)
+- Skills availability mostly dependency-gated (many non-ready skills due to missing binaries/API keys/platform requirements, not broken metadata)
 - `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
 - Skill schema-doc drift: current production skills use extra frontmatter fields while `skill-creator` guidance implies strict `name` + `description`
 - Minor skill script hygiene issue: two script files have shebangs but are not executable (`openai-whisper-api/scripts/transcribe.sh`, `video-frames/scripts/frame.sh`)
