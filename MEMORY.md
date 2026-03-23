@@ -45,6 +45,7 @@ Chad wants intelligent model routing with predictable costs:
 - Agent model routing can appear sticky across long sessions; verify actual runtime model before assuming a switch succeeded.
 - `memory_search` with QMD had recurring missing module-path failures (`.../qmd/dist/cli/qmd.js`); treat memory retrieval as partially unreliable until fixed.
 - Notion API cannot fully auto-create filtered linked database views; expect manual filter setup for dashboard variants.
+- Do not store live secrets in memory files (tokens, API keys, pairing codes); redact immediately if pasted.
 
 ## Group Chat Rules (set 2026-03-21, updated 2026-03-22)
 
