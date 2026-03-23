@@ -53,3 +53,10 @@ Chad wants intelligent model routing with predictable costs:
 - If Chad brings up social media in any other chat/DM, redirect him to the Social Media group.
 - **Telegram group chats** require tag trigger (`@panda123321_bot`) before responding.
 - Exception: Karina is approved for direct 1:1 social workflow in Telegram (no group redirect needed there).
+
+## Telegram Client Separation Pattern (set 2026-03-23)
+
+- Telegram supports only one DM thread per bot-user pair.
+- For clean per-client separation without tagging, use one Telegram bot per client and keep work in each bot DM.
+- Example naming convention: `panda_<client>_bot`.
+- If a bot token is ever pasted in chat, rotate it after setup.

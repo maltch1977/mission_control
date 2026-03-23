@@ -24,6 +24,7 @@ Use this section as a rolling log of what we discussed and what changed.
 - [2026-03-23] Heartbeat 14:46 UTC: gateway and memory remain stable; recurring allowlist warning continues; skills audit still confirms `canvas/SKILL.md` missing frontmatter as the primary structural issue.
 - [2026-03-23] Heartbeat 15:46 UTC: gateway still healthy; qmd index DB warnings now recurring (`unable to open database file`), allowlist noise persists, memory remains clean, and skills audit reconfirms `canvas` frontmatter plus `skill-creator` maintenance drift.
 - [2026-03-23] Heartbeat 18:04 UTC: gateway remains up but qmd failures continue (missing module path + DB open errors), allowlist warning noise persists, memory audit stayed clean and included secret hygiene enforcement, and skills audit still flags `canvas` plus `skill-creator` maintenance drift.
+- [2026-03-23] Heartbeat 19:04 UTC: gateway remains healthy but qmd failures and allowlist noise continue; memory promoted Telegram client-separation pattern into long-term memory; skills audit still flags `canvas` and noted additional `gh-issues` consistency drift.
 
 ---
 

@@ -90,6 +90,7 @@ Maintainer: Panda
 - Skills availability mostly dependency-gated (many non-ready skills due to missing binaries/API keys/platform requirements, not broken metadata)
 - `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
 - Skill schema-doc drift: current production skills use extra frontmatter fields while `skill-creator` guidance implies strict `name` + `description`
+- `gh-issues` consistency drift: body claims curl-only/no `gh`, while metadata still requires `gh`
 - Minor skill script hygiene issue: two script files have shebangs but are not executable (`openai-whisper-api/scripts/transcribe.sh`, `video-frames/scripts/frame.sh`)
 
 ---
