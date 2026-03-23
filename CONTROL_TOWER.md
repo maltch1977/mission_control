@@ -83,7 +83,7 @@ Maintainer: Panda
 ## Open risks
 - Slack social routing behavior was inconsistent in prior setup
 - Notion can become overhead if over-managed
-- Memory search via qmd had module-path failures and needs repair (now recurring during live gateway updates, not just historical)
+- Memory search via qmd had module-path failures and needs repair (now recurring during live gateway updates, with additional qmd DB open warnings)
 - Gateway coding allowlist has unknown entries and generates repetitive warning noise
 - Skill quality drift detected (`canvas` missing frontmatter; `model-usage` previously flagged for Linux TODO + frontmatter spec drift)
 - Skills availability mostly dependency-gated (many non-ready skills due to missing binaries/API keys/platform requirements, not broken metadata)
