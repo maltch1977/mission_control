@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repurposing Input",
+  "type": "object",
+  "properties": {
+    "original": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "format": { "type": "string" }
+      },
+      "required": ["title", "content"]
+    },
+    "target_platforms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["twitter", "linkedin", "instagram", "newsletter"]
+      }
+    }
+  },
+  "required": ["original", "target_platforms"]
+}

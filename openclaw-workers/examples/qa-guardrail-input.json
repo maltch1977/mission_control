@@ -1,0 +1,15 @@
+{
+  "draft": {
+    "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+    "content": "I spent three weeks debating between PostgreSQL and MongoDB for a product that didn't have a single user yet. That's the stack trap. You've probably been there too...",
+    "format": "blog"
+  },
+  "brief": {
+    "tone": "Conversational, honest, slightly self-deprecating",
+    "key_points": [
+      "The temptation to chase perfect tech stacks",
+      "How this delays real validation",
+      "A simple framework for 'good enough' decisions"
+    ]
+  }
+}

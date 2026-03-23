@@ -1,0 +1,15 @@
+{
+  "name": "openclaw-workers",
+  "version": "1.0.0",
+  "description": "Content production pipeline workers for OpenClaw",
+  "main": "src/cli.js",
+  "type": "module",
+  "scripts": {
+    "cli": "node src/cli.js",
+    "pipeline": "node src/pipeline.js",
+    "validate:all": "node scripts/validate-all.js",
+    "test": "node src/cli.js --list && node src/pipeline.js --strict && node scripts/validate-all.js"
+  },
+  "keywords": ["openclaw", "workers", "content", "pipeline"],
+  "license": "MIT"
+}

@@ -1,0 +1,18 @@
+{
+  "variants": [
+    {
+      "platform": "twitter",
+      "content": "I spent 3 weeks choosing between PostgreSQL and MongoDB for a product with 0 users...",
+      "hashtags": ["#buildinpublic", "#indiehacker"]
+    },
+    {
+      "platform": "linkedin",
+      "content": "The stack trap: spending weeks perfecting your tech instead of shipping to users...",
+      "hashtags": []
+    }
+  ],
+  "schedule": {
+    "publish_now": false,
+    "datetime": "2026-03-24T09:00:00Z"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QA Guardrail Input",
+  "type": "object",
+  "properties": {
+    "draft": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "format": { "type": "string" }
+      },
+      "required": ["title", "content"]
+    },
+    "brief": {
+      "type": "object",
+      "properties": {
+        "tone": { "type": "string" },
+        "key_points": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "required": ["draft"]
+}

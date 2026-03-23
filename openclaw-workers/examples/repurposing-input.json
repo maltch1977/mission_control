@@ -1,0 +1,8 @@
+{
+  "original": {
+    "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+    "content": "I spent three weeks debating between PostgreSQL and MongoDB for a product that didn't have a single user yet...",
+    "format": "blog"
+  },
+  "target_platforms": ["twitter", "linkedin"]
+}

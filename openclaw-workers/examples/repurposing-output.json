@@ -1,0 +1,21 @@
+{
+  "variants": [
+    {
+      "platform": "twitter",
+      "format": "thread",
+      "content": "I spent 3 weeks choosing between PostgreSQL and MongoDB for a product with 0 users.\n\nThat's the stack trap.\n\nHere's how to escape it (1/5)",
+      "character_count": 142,
+      "hashtags": ["#buildinpublic", "#indiehacker"],
+      "hook": "I spent 3 weeks choosing between PostgreSQL and MongoDB for a product with 0 users."
+    },
+    {
+      "platform": "linkedin",
+      "format": "short-form",
+      "content": "The stack trap: spending weeks perfecting your tech instead of shipping to users.\n\nI fell into it. 3 weeks debating databases for a product no one had seen yet.\n\nThe fix? Default to what you know. Optimize later. Ship now.",
+      "character_count": 234,
+      "hashtags": [],
+      "hook": "The stack trap: spending weeks perfecting your tech instead of shipping to users."
+    }
+  ],
+  "handoff_to": "publishing-ops"
+}

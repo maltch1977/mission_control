@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Orchestrator Handoff Schema",
+  "description": "Standard envelope for all worker handoffs",
+  "type": "object",
+  "properties": {
+    "handoff": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "enum": [
+            "creative-partner",
+            "content-producer",
+            "repurposing",
+            "qa-guardrail",
+            "publishing-ops",
+            "weekly-feedback"
+          ]
+        },
+        "to": {
+          "type": "string",
+          "enum": [
+            "creative-partner",
+            "content-producer",
+            "repurposing",
+            "qa-guardrail",
+            "publishing-ops",
+            "weekly-feedback"
+          ]
+        },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "pipeline_id": { "type": "string" }
+      },
+      "required": ["from", "to", "timestamp"]
+    },
+    "payload": {
+      "type": "object",
+      "description": "Worker-specific output data"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "original_request": { "type": "string" },
+        "karina_notes": { "type": "string" },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "urgent"]
+        }
+      }
+    }
+  },
+  "required": ["handoff", "payload"]
+}

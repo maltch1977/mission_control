@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Weekly Feedback Input",
+  "type": "object",
+  "properties": {
+    "week_start": { "type": "string", "format": "date" },
+    "week_end": { "type": "string", "format": "date" },
+    "content_published": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "platform": { "type": "string" },
+          "published_at": { "type": "string", "format": "date-time" },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "views": { "type": "number" },
+              "engagement": { "type": "number" },
+              "shares": { "type": "number" },
+              "comments": { "type": "number" }
+            }
+          }
+        },
+        "required": ["title", "platform"]
+      }
+    }
+  },
+  "required": ["week_start", "week_end"]
+}

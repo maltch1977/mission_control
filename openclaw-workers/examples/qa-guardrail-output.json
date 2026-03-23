@@ -1,0 +1,20 @@
+{
+  "review": {
+    "status": "approved",
+    "score": {
+      "clarity": 9,
+      "tone_match": 9,
+      "completeness": 8
+    },
+    "checks": {
+      "facts_verified": true,
+      "links_work": true,
+      "tone_consistent": true,
+      "no_sensitive_content": true
+    },
+    "feedback": ["Strong opening hook", "Personal story adds credibility", "Framework is actionable"],
+    "suggested_edits": []
+  },
+  "handoff_to": "repurposing",
+  "note": "Content approved. Ready for platform variants."
+}

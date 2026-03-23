@@ -1,0 +1,34 @@
+{
+  "summary": {
+    "total_posts": 2,
+    "top_performer": {
+      "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+      "platform": "twitter",
+      "why_it_worked": "The personal confession format resonated. The specific detail '3 weeks' made it relatable. Thread format drove engagement."
+    },
+    "underperformer": {
+      "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+      "platform": "linkedin",
+      "possible_reasons": [
+        "LinkedIn audience prefers longer-form thought leadership",
+        "Timing was 30 min after Twitter, some overlap in audience"
+      ]
+    }
+  },
+  "insights": [
+    "Personal stories outperform generic advice by 2x",
+    "Specific timeframes ('3 weeks') make claims more credible",
+    "Twitter thread format drives more shares than single posts"
+  ],
+  "recommendations": [
+    "Lead with Twitter for personal stories, expand to LinkedIn with more analysis",
+    "Test posting LinkedIn variant 24 hours later instead of 30 minutes",
+    "Double down on 'confession' style content"
+  ],
+  "experiments": [
+    "Try a poll on Twitter about biggest time-wasters",
+    "A/B test LinkedIn posts with vs without personal stories",
+    "Test carousel format on LinkedIn for list-style content"
+  ],
+  "handoff_to": "creative-partner"
+}

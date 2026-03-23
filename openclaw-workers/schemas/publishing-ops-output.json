@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Publishing Ops Output",
+  "type": "object",
+  "properties": {
+    "publication_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string" },
+          "content": { "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": ["publish", "schedule", "draft"]
+          },
+          "scheduled_time": { "type": ["string", "null"] },
+          "preview_url": { "type": ["string", "null"] }
+        },
+        "required": ["platform", "content", "action"]
+      }
+    },
+    "checklist": {
+      "type": "object",
+      "properties": {
+        "images_ready": { "type": "boolean" },
+        "links_tested": { "type": "boolean" },
+        "seo_meta": { "type": "boolean" },
+        "cross_links": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["weekly-feedback"]
+    }
+  },
+  "required": ["publication_plan", "handoff_to"]
+}

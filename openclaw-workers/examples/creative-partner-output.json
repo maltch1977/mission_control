@@ -1,0 +1,17 @@
+{
+  "brief": {
+    "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+    "angle": "Personal confession + actionable warning about perfectionism in tech choices",
+    "target_audience": "Solo founders and indie hackers building their first product",
+    "key_points": [
+      "The temptation to chase perfect tech stacks",
+      "How this delays real validation",
+      "A simple framework for 'good enough' decisions",
+      "My personal story of wasted weeks"
+    ],
+    "tone": "Conversational, honest, slightly self-deprecating",
+    "cta": "What's your stack trap? Reply and I'll share my 'ship it' checklist.",
+    "estimated_length": "medium"
+  },
+  "handoff_to": "content-producer"
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Creative Partner Input",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Raw message from Karina with her idea or topic"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "recent_topics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Topics covered recently to avoid repetition"
+        },
+        "current_focus": {
+          "type": "string",
+          "description": "Current business or content focus area"
+        }
+      }
+    }
+  },
+  "required": ["message"]
+}

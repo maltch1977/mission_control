@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QA Guardrail Output",
+  "type": "object",
+  "properties": {
+    "review": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["approved", "needs_revision", "rejected"]
+        },
+        "score": {
+          "type": "object",
+          "properties": {
+            "clarity": { "type": "number", "minimum": 1, "maximum": 10 },
+            "tone_match": { "type": "number", "minimum": 1, "maximum": 10 },
+            "completeness": { "type": "number", "minimum": 1, "maximum": 10 }
+          }
+        },
+        "checks": {
+          "type": "object",
+          "properties": {
+            "facts_verified": { "type": "boolean" },
+            "links_work": { "type": "boolean" },
+            "tone_consistent": { "type": "boolean" },
+            "no_sensitive_content": { "type": "boolean" }
+          }
+        },
+        "feedback": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "suggested_edits": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["status"]
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["repurposing", "content-producer"]
+    }
+  },
+  "required": ["review", "handoff_to"]
+}

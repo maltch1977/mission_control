@@ -1,0 +1,25 @@
+{
+  "publication_plan": [
+    {
+      "platform": "twitter",
+      "content": "I spent 3 weeks choosing between PostgreSQL and MongoDB for a product with 0 users.\n\nThat's the stack trap.\n\nHere's how to escape it (1/5)",
+      "action": "schedule",
+      "scheduled_time": "2026-03-24T09:00:00Z",
+      "preview_url": null
+    },
+    {
+      "platform": "linkedin",
+      "content": "The stack trap: spending weeks perfecting your tech instead of shipping to users.\n\nI fell into it. 3 weeks debating databases for a product no one had seen yet.\n\nThe fix? Default to what you know. Optimize later. Ship now.",
+      "action": "schedule",
+      "scheduled_time": "2026-03-24T09:30:00Z",
+      "preview_url": null
+    }
+  ],
+  "checklist": {
+    "images_ready": true,
+    "links_tested": true,
+    "seo_meta": false,
+    "cross_links": ["blog post URL when published"]
+  },
+  "handoff_to": "weekly-feedback"
+}

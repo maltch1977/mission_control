@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repurposing Output",
+  "type": "object",
+  "properties": {
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string" },
+          "format": { "type": "string" },
+          "content": { "type": "string" },
+          "character_count": { "type": "number" },
+          "hashtags": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "hook": { "type": "string" }
+        },
+        "required": ["platform", "content"]
+      }
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["publishing-ops"]
+    }
+  },
+  "required": ["variants", "handoff_to"]
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Weekly Feedback Output",
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total_posts": { "type": "number" },
+        "top_performer": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "platform": { "type": "string" },
+            "why_it_worked": { "type": "string" }
+          }
+        },
+        "underperformer": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "possible_reasons": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "insights": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "experiments": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["creative-partner"]
+    }
+  },
+  "required": ["summary", "handoff_to"]
+}

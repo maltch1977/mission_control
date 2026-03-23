@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Content Producer Output",
+  "type": "object",
+  "properties": {
+    "draft": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "format": {
+          "type": "string",
+          "enum": ["blog", "thread", "newsletter", "linkedin"]
+        },
+        "content": { "type": "string" },
+        "word_count": { "type": "number" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "heading": { "type": "string" },
+              "text": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["title", "format", "content"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "suggested_images": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["qa-guardrail"]
+    }
+  },
+  "required": ["draft", "handoff_to"]
+}

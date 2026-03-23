@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Creative Partner Output",
+  "type": "object",
+  "properties": {
+    "brief": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "angle": { "type": "string" },
+        "target_audience": { "type": "string" },
+        "key_points": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "tone": { "type": "string" },
+        "cta": { "type": "string" },
+        "estimated_length": {
+          "type": "string",
+          "enum": ["short", "medium", "long"]
+        }
+      },
+      "required": ["title", "angle", "key_points", "tone", "cta"]
+    },
+    "handoff_to": {
+      "type": "string",
+      "enum": ["content-producer"]
+    }
+  },
+  "required": ["brief", "handoff_to"]
+}

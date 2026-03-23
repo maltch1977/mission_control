@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Publishing Ops Input",
+  "type": "object",
+  "properties": {
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string" },
+          "content": { "type": "string" },
+          "hashtags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["platform", "content"]
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "properties": {
+        "publish_now": { "type": "boolean" },
+        "datetime": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "required": ["variants"]
+}

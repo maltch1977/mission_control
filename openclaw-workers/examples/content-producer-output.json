@@ -1,0 +1,27 @@
+{
+  "draft": {
+    "title": "The Stack Trap: Why Solo Founders Keep Rebuilding Instead of Shipping",
+    "format": "blog",
+    "content": "I spent three weeks debating between PostgreSQL and MongoDB for a product that didn't have a single user yet.\n\nThat's the stack trap. You've probably been there too.\n\nAs solo founders, we tell ourselves we're 'making technical decisions.' What we're really doing is procrastinating on the hard part: putting our work in front of real people.\n\nThe stack trap feels productive. You're learning, comparing, optimizing. But it's a mirage. No one ever failed because they chose the wrong database on day one. They failed because they never shipped.\n\nHere's my framework for escaping it:\n\n1. Default to what you know\n2. If it works for 1000 users, it's good enough for now\n3. The best stack is the one that gets you to validation fastest\n\nI eventually shipped with SQLite. It handled my first 500 users without a hiccup. By then, I had real feedback to guide real technical decisions.\n\nWhat's your stack trap? Reply and I'll share my 'ship it' checklist.",
+    "word_count": 178,
+    "sections": [
+      {
+        "heading": "The Trap",
+        "text": "I spent three weeks debating between PostgreSQL and MongoDB for a product that didn't have a single user yet."
+      },
+      {
+        "heading": "Why We Do It",
+        "text": "As solo founders, we tell ourselves we're 'making technical decisions.' What we're really doing is procrastinating on the hard part."
+      },
+      {
+        "heading": "The Escape",
+        "text": "Default to what you know. If it works for 1000 users, it's good enough for now."
+      }
+    ]
+  },
+  "metadata": {
+    "tags": ["founder", "shipping", "mvp", "productivity"],
+    "suggested_images": ["stack-trap-diagram.png", "shipping-meme.jpg"]
+  },
+  "handoff_to": "qa-guardrail"
+}
