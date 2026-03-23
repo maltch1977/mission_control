@@ -26,6 +26,13 @@ Chad wants intelligent model routing with predictable costs:
 - Never silently switch models
 - Never hardcode "Sonnet" labels when another model is active
 
+## Product + Workflow Context
+
+- Chad is building the Kepter ecosystem (sports app, mobile app, site app, backend/admin stack).
+- Launch support includes content guidance and social campaign execution.
+- Karina handles day-to-day social workflow directly with Panda in Telegram 1:1.
+- Chad commonly uses Wispr voice dictation with Telegram, so concise voice-friendly outputs are useful.
+
 ## Writing Rule (set 2026-03-23)
 
 - Never use em dashes in any assistant reply or generated copy.
