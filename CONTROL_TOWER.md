@@ -87,7 +87,7 @@ Maintainer: Panda
 - Notion can become overhead if over-managed
 - Memory search via qmd had module-path failures and needs repair (now recurring during live gateway updates, with additional qmd DB open warnings)
 - Gateway coding allowlist has unknown entries and generates repetitive warning noise
-- Skill quality drift detected (`canvas` missing frontmatter; `model-usage` previously flagged for Linux TODO + frontmatter spec drift)
+- Skill quality drift detected (`canvas` missing frontmatter; `model-usage` has unresolved Linux TODO; `ordercli` marked partial/WIP for Deliveroo support)
 - Skills availability mostly dependency-gated (many non-ready skills due to missing binaries/API keys/platform requirements, not broken metadata)
 - `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
 - Skill schema-doc drift: current production skills use extra frontmatter fields while `skill-creator` guidance implies strict `name` + `description`
