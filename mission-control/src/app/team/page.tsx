@@ -179,6 +179,14 @@ export default function TeamPage() {
   const [agents, setAgents] = useState<Agent[]>(seeds);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [draft, setDraft] = useState(blank);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<{ name: string; role: string; model: string; status: AgentStatus; mission: string }>({
+    name: "",
+    role: "",
+    model: "Kimi",
+    status: "idle",
+    mission: "",
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -218,6 +226,39 @@ export default function TeamPage() {
     if (supabase) await supabase.from("agents_org").insert(row);
   };
 
+  const beginEdit = (agent: Agent) => {
+    setEditingId(agent.id);
+    setEditDraft({
+      name: agent.name,
+      role: agent.role,
+      model: agent.model,
+      status: agent.status,
+      mission: agent.mission || "",
+    });
+  };
+
+  const saveEdit = async () => {
+    if (!editingId) return;
+    const updated = {
+      id: editingId,
+      name: editDraft.name.trim(),
+      role: editDraft.role.trim(),
+      model: editDraft.model.trim(),
+      status: editDraft.status,
+      mission: editDraft.mission.trim() || null,
+      last_active: "just now",
+    };
+    setAgents((prev) => prev.map((a) => (a.id === editingId ? { ...a, ...updated } : a)));
+    if (supabase) await supabase.from("agents_org").upsert(updated);
+    setEditingId(null);
+  };
+
+  const removeAgent = async (id: string) => {
+    setAgents((prev) => prev.filter((a) => a.id !== id));
+    if (supabase) await supabase.from("agents_org").delete().eq("id", id);
+    if (editingId === id) setEditingId(null);
+  };
+
   const chief = useMemo(() => agents.find((a) => a.name.toLowerCase() === "panda") || seeds[0], [agents]);
 
   return (
@@ -246,6 +287,25 @@ export default function TeamPage() {
             </form>
           </section>
 
+          {editingId && (
+            <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
+              <p className="mb-3 text-sm font-semibold">Edit Agent</p>
+              <div className="grid gap-2 md:grid-cols-6">
+                <input value={editDraft.name} onChange={(e) => setEditDraft((p) => ({ ...p, name: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Name" />
+                <input value={editDraft.role} onChange={(e) => setEditDraft((p) => ({ ...p, role: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Role" />
+                <input value={editDraft.model} onChange={(e) => setEditDraft((p) => ({ ...p, model: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Model" />
+                <select value={editDraft.status} onChange={(e) => setEditDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
+                  <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
+                </select>
+                <input value={editDraft.mission} onChange={(e) => setEditDraft((p) => ({ ...p, mission: e.target.value }))} className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Mission" />
+              </div>
+              <div className="mt-3 flex gap-2">
+                <button type="button" onClick={saveEdit} className="rounded bg-violet-600 px-3 py-2 text-sm font-medium">Save</button>
+                <button type="button" onClick={() => setEditingId(null)} className="rounded border border-zinc-700 px-3 py-2 text-sm">Cancel</button>
+              </div>
+            </section>
+          )}
+
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {departmentConfigs.map((cfg) => {
               const lead = agents.find((a) => a.name.toLowerCase() === cfg.leadName.toLowerCase());
@@ -272,6 +332,12 @@ export default function TeamPage() {
                     </div>
                     <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(lead?.model || cfg.modelDefault)}</span></p>
                     <p className="mt-1 text-xs text-zinc-500">{lead?.last_active || "today"} · {activeCount} tasks</p>
+                    {lead && (
+                      <div className="mt-3 flex gap-2">
+                        <button type="button" onClick={() => beginEdit(lead)} className="rounded bg-zinc-800 px-2 py-1 text-xs">Edit</button>
+                        <button type="button" onClick={() => removeAgent(lead.id)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300">Delete</button>
+                      </div>
+                    )}
                   </div>
 
                   <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">Capabilities</p>
