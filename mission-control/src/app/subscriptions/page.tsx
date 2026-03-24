@@ -118,15 +118,16 @@ export default function SubscriptionsPage() {
       .sort((a, b) => a.days - b.days);
   }, [items]);
 
-  const calendarBuckets = useMemo(() => {
+  const monthlyBuckets = useMemo(() => {
     const grouped = new Map<string, typeof upcoming>();
     for (const row of upcoming) {
-      const key = row.renewal_effective;
+      const d = new Date(`${row.renewal_effective}T00:00:00`);
+      const key = d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
       const list = grouped.get(key) ?? [];
       list.push(row);
       grouped.set(key, list);
     }
-    return Array.from(grouped.entries()).slice(0, 20);
+    return Array.from(grouped.entries()).slice(0, 12);
   }, [upcoming]);
 
   return (
@@ -184,20 +185,23 @@ export default function SubscriptionsPage() {
             </section>
 
             <aside className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-              <h2 className="mb-3 text-sm font-semibold">Renewal Calendar (Upcoming)</h2>
+              <h2 className="mb-3 text-sm font-semibold">Upcoming Renewals List</h2>
               <div className="space-y-3">
-                {calendarBuckets.length === 0 ? (
+                {monthlyBuckets.length === 0 ? (
                   <p className="text-sm text-zinc-500">No subscriptions found.</p>
                 ) : (
-                  calendarBuckets.map(([date, rows]) => (
-                    <div key={date}>
-                      <p className="mb-1 text-xs font-semibold text-zinc-400">{date}</p>
+                  monthlyBuckets.map(([month, rows]) => (
+                    <div key={month}>
+                      <p className="mb-1 text-xs font-semibold text-zinc-400">{month}</p>
                       <div className="space-y-2">
                         {rows.map((u) => (
                           <article key={u.id} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
-                            <p className="text-sm font-medium">{u.name}</p>
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-medium">{u.name}</p>
+                              <p className="text-xs text-zinc-300">${Number(u.amount).toFixed(2)}</p>
+                            </div>
                             <p className="mt-1 text-xs text-zinc-400">
-                              {u.days < 0 ? "past due" : `${u.days} days`} · {u.account}
+                              {u.renewal_effective} · {u.days < 0 ? "past due" : `${u.days} days`} · {u.account}
                             </p>
                             {u.assumed && <p className="text-[11px] text-amber-300">Assumed renewal date (no exact date set)</p>}
                           </article>
