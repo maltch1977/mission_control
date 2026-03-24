@@ -300,10 +300,30 @@ export default function TeamPage() {
           <header className="mb-5 rounded-2xl border border-zinc-800/80 bg-gradient-to-r from-violet-900/30 to-indigo-900/20 p-4">
             <p className="text-xs uppercase tracking-[0.18em] text-zinc-400">Team</p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-zinc-50">Org Operations</h1>
-            <p className="mt-2 text-sm text-zinc-300">
-              {chief.name} · {chief.role} · Model {chief.model}
-            </p>
+            <p className="mt-2 text-sm text-zinc-300">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
           </header>
+
+          <section className="mb-5">
+            <div className="mx-auto max-w-xl rounded-2xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-4 shadow-[0_0_0_1px_rgba(139,92,246,0.2)]">
+              <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                Chief of Staff
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">🐼</div>
+                  <div>
+                    <p className="text-2xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
+                    <p className="text-sm text-violet-300">{chief.role}</p>
+                    <p className="text-sm text-zinc-300">{modelLabel(chief.model)}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className={`inline-flex rounded-full px-2.5 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status.toUpperCase()}</span>
+                  <p className="mt-2 text-xs text-zinc-400">{chief.last_active}</p>
+                </div>
+              </div>
+            </div>
+          </section>
 
           <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-3">
             <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
