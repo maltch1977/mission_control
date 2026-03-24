@@ -101,6 +101,7 @@ alter table public.memory_entries enable row level security;
 alter table public.long_term_memory enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.agents_org enable row level security;
+alter table public.work_log enable row level security;
 
 drop policy if exists tasks_all_anon on public.tasks;
 create policy tasks_all_anon on public.tasks for all to anon using (true) with check (true);
@@ -122,6 +123,10 @@ create policy long_term_memory_all_anon on public.long_term_memory for all to an
 
 drop policy if exists subscriptions_all_anon on public.subscriptions;
 create policy subscriptions_all_anon on public.subscriptions for all to anon using (true) with check (true);
+
+drop policy if exists agents_org_all_anon on public.agents_org;
+create policy agents_org_all_anon on public.agents_org for all to anon using (true) with check (true);
+sing (true) with check (true);
 
 drop policy if exists agents_org_all_anon on public.agents_org;
 create policy agents_org_all_anon on public.agents_org for all to anon using (true) with check (true);

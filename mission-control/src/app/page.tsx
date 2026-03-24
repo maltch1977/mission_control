@@ -333,7 +333,7 @@ export default function Home() {
     await supabase.from("tasks").delete().eq("id", taskId);
   };
 
-  const pushActivity = (entry: Omit<Activity, "id" | "time">) => {
+  const pushActivity = (entry: Omit<Activity, "id" | "time">, meta?: { project?: string; taskId?: string }) => {
     const newItem = { id: crypto.randomUUID(), time: nowLabel(), ...entry };
     setActivity((prev) => [newItem, ...prev].slice(0, 50));
     if (supabase) {
@@ -342,6 +342,14 @@ export default function Home() {
         agent: newItem.agent,
         text: newItem.text,
         time_label: newItem.time,
+      });
+      void supabase.from("work_log").insert({
+        id: crypto.randomUUID(),
+        actor: newItem.agent,
+        action: newItem.text.slice(0, 120),
+        details: newItem.text,
+        project: meta?.project || null,
+        related_task_id: meta?.taskId || null,
       });
     }
   };
