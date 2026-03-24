@@ -259,6 +259,37 @@ export default function TeamPage() {
     if (editingId === id) setEditingId(null);
   };
 
+  useEffect(() => {
+    if (!supabase || agents.length === 0) return;
+
+    const activeByAgent = new Map<string, number>();
+    tasks.forEach((t) => {
+      const key = t.owner.toLowerCase();
+      if (t.status !== "done") activeByAgent.set(key, (activeByAgent.get(key) || 0) + 1);
+    });
+
+    const updates = agents
+      .map((a) => {
+        const active = activeByAgent.get(a.name.toLowerCase()) || 0;
+        if (active > 0 && a.status === "idle") {
+          return { ...a, status: "working" as AgentStatus, last_active: "just now" };
+        }
+        if (active === 0 && a.status === "working") {
+          return { ...a, status: "review" as AgentStatus };
+        }
+        return null;
+      })
+      .filter(Boolean) as Agent[];
+
+    if (updates.length === 0) return;
+
+    const client = supabase;
+    if (!client) return;
+    updates.forEach((u) => {
+      void client.from("agents_org").upsert(u);
+    });
+  }, [tasks, agents]);
+
   const chief = useMemo(() => agents.find((a) => a.name.toLowerCase() === "panda") || seeds[0], [agents]);
 
   return (

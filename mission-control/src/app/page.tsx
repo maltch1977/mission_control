@@ -316,6 +316,19 @@ export default function Home() {
     const title = taskDraft.title.trim();
     if (!title) return;
 
+    const isPremiumAllowed =
+      taskDraft.modelTier !== "premium" ||
+      (taskDraft.priority === "high" && taskDraft.role.toLowerCase().includes("strategy")) ||
+      taskDraft.tags.toLowerCase().includes("allow-premium");
+
+    if (!isPremiumAllowed) {
+      pushActivity({
+        agent: "Panda",
+        text: `Blocked premium model on "${title}". Use standard/cheap or mark high-priority strategy (+ allow-premium tag).`,
+      });
+      return;
+    }
+
     if (editingTaskId) {
       setTasks((prev) => {
         const next = prev.map((task) => {
