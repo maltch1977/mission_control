@@ -189,12 +189,12 @@ export default function MemoryPage() {
         <Sidebar />
 
         <main className="flex-1 p-4 md:p-6">
-          <header className="mb-4">
-            <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Memory</p>
-            <h1 className="text-2xl font-semibold text-zinc-50">Journal Memory</h1>
+          <header className="mb-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Memory</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-zinc-50">Journal Memory</h1>
           </header>
 
-          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+          <section className="mb-5 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4">
             <form className="grid gap-2 md:grid-cols-8" onSubmit={addEntry}>
               <input value={title} onChange={(e) => setTitle(e.target.value)} className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Entry title" />
               <input value={summary} onChange={(e) => setSummary(e.target.value)} className="md:col-span-3 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Summary" />
@@ -204,22 +204,22 @@ export default function MemoryPage() {
             </form>
           </section>
 
-          <div className="grid gap-4 xl:grid-cols-[360px_1fr]">
-            <aside className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+          <div className="grid gap-5 xl:grid-cols-[380px_1fr]">
+            <aside className="rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search memories..."
-                className="mb-3 w-full rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"
+                placeholder="Search entries, projects, decisions..."
+                className="mb-4 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-500"
               />
 
-              <div className="mb-3 rounded-lg border border-zinc-800 bg-zinc-900/70 p-3">
+              <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3.5">
                 <input value={longTerm.title} onChange={(e) => setLongTerm((p) => ({ ...p, title: e.target.value }))} className="w-full rounded bg-zinc-800 px-2 py-1 text-sm font-semibold" />
                 <textarea value={longTerm.summary} onChange={(e) => setLongTerm((p) => ({ ...p, summary: e.target.value }))} className="mt-2 w-full rounded bg-zinc-800 px-2 py-1 text-xs" rows={3} />
                 <button onClick={saveLongTerm} className="mt-2 rounded bg-zinc-700 px-2 py-1 text-xs">Save Long-Term</button>
               </div>
 
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">Daily Journal</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Daily Journal</p>
               <div className="space-y-3">
                 {grouped.map(([date, items]) => (
                   <div key={date}>
@@ -230,10 +230,10 @@ export default function MemoryPage() {
                           key={entry.id}
                           type="button"
                           onClick={() => setSelectedId(entry.id)}
-                          className={`w-full rounded-lg border p-3 text-left ${
+                          className={`w-full rounded-xl border px-3 py-3 text-left transition ${
                             selected?.id === entry.id
-                              ? "border-zinc-700 bg-zinc-800/70"
-                              : "border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/40"
+                              ? "border-zinc-700 bg-zinc-800/75 shadow-[0_0_0_1px_rgba(113,113,122,0.25)]"
+                              : "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800/40"
                           }`}
                         >
                           <p className="text-sm font-medium text-zinc-100">{entry.title}</p>
@@ -247,24 +247,26 @@ export default function MemoryPage() {
               </div>
             </aside>
 
-            <section className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-6">
+            <section className="rounded-2xl border border-zinc-800/80 bg-[#0e0e12] px-8 py-7">
               {selected ? (
                 <>
-                  <div className="mb-5 border-b border-zinc-800 pb-4">
+                  <div className="mb-7 border-b border-zinc-800 pb-5">
                     <p className="text-sm text-zinc-500">{formatDate(selected.date_key)}</p>
-                    <h2 className="text-3xl font-semibold leading-tight text-zinc-100">{selected.title}</h2>
-                    <p className="mt-1 text-xs text-zinc-500">{selected.word_count} words · {selected.updated_ago}</p>
+                    <h2 className="mt-1 text-[34px] font-semibold leading-[1.15] tracking-tight text-zinc-100">
+                      {selected.title}
+                    </h2>
+                    <p className="mt-2 text-xs text-zinc-500">{selected.word_count} words · {selected.updated_ago}</p>
                   </div>
 
-                  <div className="space-y-5">
+                  <div className="space-y-7">
                     {sectionize(selected.content).map((sec, idx) => (
                       <article key={idx}>
-                        <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400">{sec.heading}</h3>
-                        <p className="whitespace-pre-wrap text-[15px] leading-7 text-zinc-300">{sec.body.trim()}</p>
+                        <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">{sec.heading}</h3>
+                        <p className="whitespace-pre-wrap text-[16px] leading-8 text-zinc-300">{sec.body.trim()}</p>
                       </article>
                     ))}
                     {sectionize(selected.content).length === 0 && (
-                      <p className="whitespace-pre-wrap text-[15px] leading-7 text-zinc-300">{selected.content}</p>
+                      <p className="whitespace-pre-wrap text-[16px] leading-8 text-zinc-300">{selected.content}</p>
                     )}
                   </div>
                 </>
