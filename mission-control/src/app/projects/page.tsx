@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
 
@@ -32,23 +32,15 @@ const seedMeta: ProjectMeta[] = [
     owner: "Panda",
     priority: "high",
   },
-  {
-    id: "p2",
-    name: "HMS Outreach",
-    description: "Cold outreach refinement, campaign testing, and execution tracking.",
-    status: "Active",
-    owner: "Chad",
-    priority: "high",
-  },
-  {
-    id: "p3",
-    name: "Memory System",
-    description: "Daily and long-term continuity with searchable context and summaries.",
-    status: "Planning",
-    owner: "Panda",
-    priority: "medium",
-  },
 ];
+
+const blankProject = {
+  name: "",
+  description: "",
+  status: "Planning" as ProjectMeta["status"],
+  owner: "Panda",
+  priority: "medium" as ProjectMeta["priority"],
+};
 
 function statusPill(status: ProjectMeta["status"]) {
   if (status === "Active") return "bg-emerald-900/60 text-emerald-300";
@@ -65,6 +57,8 @@ function priorityPill(priority: ProjectMeta["priority"]) {
 export default function ProjectsPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [meta, setMeta] = useState<ProjectMeta[]>(seedMeta);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draft, setDraft] = useState(blankProject);
 
   useEffect(() => {
     const load = async () => {
@@ -99,6 +93,53 @@ export default function ProjectsPage() {
     });
   }, [meta, tasks]);
 
+  const reset = () => {
+    setDraft(blankProject);
+    setEditingId(null);
+  };
+
+  const submitProject = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!draft.name.trim()) return;
+
+    if (editingId) {
+      const updated = { ...draft, id: editingId, name: draft.name.trim(), description: draft.description.trim() };
+      setMeta((prev) => prev.map((p) => (p.id === editingId ? updated : p)));
+      if (supabase) await supabase.from("projects").upsert(updated);
+      reset();
+      return;
+    }
+
+    const created = {
+      id: crypto.randomUUID(),
+      name: draft.name.trim(),
+      description: draft.description.trim(),
+      status: draft.status,
+      owner: draft.owner,
+      priority: draft.priority,
+    };
+    setMeta((prev) => [created, ...prev]);
+    if (supabase) await supabase.from("projects").insert(created);
+    reset();
+  };
+
+  const beginEdit = (project: ProjectMeta) => {
+    setEditingId(project.id);
+    setDraft({
+      name: project.name,
+      description: project.description,
+      status: project.status,
+      owner: project.owner,
+      priority: project.priority,
+    });
+  };
+
+  const removeProject = async (id: string) => {
+    setMeta((prev) => prev.filter((p) => p.id !== id));
+    if (supabase) await supabase.from("projects").delete().eq("id", id);
+    if (editingId === id) reset();
+  };
+
   const activeCount = projectCards.filter((p) => p.status === "Active").length;
   const planningCount = projectCards.filter((p) => p.status === "Planning").length;
 
@@ -116,23 +157,33 @@ export default function ProjectsPage() {
             </p>
           </header>
 
+          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+            <form className="grid gap-2 md:grid-cols-6" onSubmit={submitProject}>
+              <input className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Project name" value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} />
+              <input className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Description" value={draft.description} onChange={(e) => setDraft((p) => ({ ...p, description: e.target.value }))} />
+              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as ProjectMeta["status"] }))}><option>Planning</option><option>Active</option><option>Paused</option></select>
+              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.owner} onChange={(e) => setDraft((p) => ({ ...p, owner: e.target.value }))}><option>Panda</option><option>Chad</option></select>
+              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.priority} onChange={(e) => setDraft((p) => ({ ...p, priority: e.target.value as ProjectMeta["priority"] }))}><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select>
+              <div className="md:col-span-6 flex gap-2">
+                <button className="rounded bg-violet-600 px-3 py-2 text-sm font-medium" type="submit">{editingId ? "Save Project" : "+ Add Project"}</button>
+                {editingId && <button className="rounded border border-zinc-700 px-3 py-2 text-sm" type="button" onClick={reset}>Cancel</button>}
+              </div>
+            </form>
+          </section>
+
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {projectCards.map((project) => (
               <article key={project.id} className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
                   <h2 className="text-lg font-semibold text-zinc-100">{project.name}</h2>
-                  <span className={`rounded-full px-2 py-1 text-xs ${statusPill(project.status)}`}>
-                    {project.status}
-                  </span>
+                  <span className={`rounded-full px-2 py-1 text-xs ${statusPill(project.status)}`}>{project.status}</span>
                 </div>
 
                 <p className="mb-4 line-clamp-2 text-sm text-zinc-400">{project.description}</p>
 
                 <div className="mb-1 flex items-center justify-between text-xs text-zinc-500">
                   <span>{project.progress}%</span>
-                  <span>
-                    {project.done}/{project.total}
-                  </span>
+                  <span>{project.done}/{project.total}</span>
                 </div>
                 <div className="mb-4 h-2 rounded-full bg-zinc-800">
                   <div className="h-full rounded-full bg-emerald-400" style={{ width: `${project.progress}%` }} />
@@ -140,18 +191,19 @@ export default function ProjectsPage() {
 
                 <div className="mb-3 flex items-center gap-2 text-xs">
                   <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{project.owner}</span>
-                  <span className={`rounded-full px-2 py-1 ${priorityPill(project.priority)}`}>
-                    {project.priority}
-                  </span>
+                  <span className={`rounded-full px-2 py-1 ${priorityPill(project.priority)}`}>{project.priority}</span>
                 </div>
 
                 <div className="space-y-1">
                   {project.linked.slice(0, 3).map((t) => (
-                    <p key={t.id} className="text-xs text-zinc-400">
-                      • {t.title}
-                    </p>
+                    <p key={t.id} className="text-xs text-zinc-400">• {t.title}</p>
                   ))}
                   {project.linked.length === 0 && <p className="text-xs text-zinc-500">No linked tasks yet</p>}
+                </div>
+
+                <div className="mt-3 flex gap-2">
+                  <button type="button" onClick={() => beginEdit(project)} className="rounded bg-zinc-800 px-2 py-1 text-xs">Edit</button>
+                  <button type="button" onClick={() => removeProject(project.id)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300">Delete</button>
                 </div>
               </article>
             ))}
