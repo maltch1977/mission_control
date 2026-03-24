@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
-type TaskStatus = "recurring" | "backlog" | "in-progress" | "review";
+type TaskStatus = "recurring" | "backlog" | "in-progress" | "review" | "done";
 type Priority = "high" | "med" | "low";
 type Owner = "Chad" | "Panda";
 
@@ -108,15 +108,17 @@ const statusLabels: Record<TaskStatus, string> = {
   backlog: "Backlog",
   "in-progress": "In Progress",
   review: "Review",
+  done: "Done",
 };
 
-const statusOrder: TaskStatus[] = ["recurring", "backlog", "in-progress", "review"];
+const statusOrder: TaskStatus[] = ["recurring", "backlog", "in-progress", "review", "done"];
 
 const nextStatus: Record<TaskStatus, TaskStatus | null> = {
   recurring: "backlog",
   backlog: "in-progress",
   "in-progress": "review",
-  review: null,
+  review: "done",
+  done: null,
 };
 
 const prevStatus: Record<TaskStatus, TaskStatus | null> = {
@@ -124,6 +126,7 @@ const prevStatus: Record<TaskStatus, TaskStatus | null> = {
   backlog: "recurring",
   "in-progress": "backlog",
   review: "in-progress",
+  done: "review",
 };
 
 const priorityDot: Record<Priority, string> = {
@@ -197,7 +200,7 @@ export default function Home() {
   );
 
   const inProgress = filteredTasks.filter((task) => task.status === "in-progress").length;
-  const completed = filteredTasks.filter((task) => task.status === "review").length;
+  const completed = filteredTasks.filter((task) => task.status === "done").length;
   const completion = filteredTasks.length ? Math.round((completed / filteredTasks.length) * 100) : 0;
 
   const getTasksByStatus = (status: TaskStatus) => filteredTasks.filter((task) => task.status === status);
@@ -305,6 +308,17 @@ export default function Home() {
           text: `Moved "${task.title}" from ${statusLabels[task.status]} to ${statusLabels[destination]}.`,
         });
         return { ...task, status: destination, updated: "just now" };
+      }),
+    );
+  };
+
+  const assignToPanda = (taskId: string) => {
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.id !== taskId) return task;
+        if (task.owner === "Panda") return task;
+        pushActivity({ agent: "Panda", text: `Task assigned to Panda: ${task.title}` });
+        return { ...task, owner: "Panda", updated: "just now" };
       }),
     );
   };
@@ -421,7 +435,7 @@ export default function Home() {
             </form>
           </section>
 
-          <section className="mb-4 flex items-center gap-2 text-sm">
+          <section className="mb-2 flex items-center gap-2 text-sm">
             <span className="text-zinc-400">Owner:</span>
             {(["all", "Chad", "Panda"] as OwnerFilter[]).map((owner) => (
               <button
@@ -435,9 +449,13 @@ export default function Home() {
             ))}
           </section>
 
+          <p className="mb-4 text-xs text-zinc-500">
+            Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> when you want Panda to pull them first during heartbeat checks.
+          </p>
+
           <div className="grid gap-4 xl:grid-cols-[1fr_310px]">
             <section className="overflow-x-auto rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-              <div className="grid min-w-[1050px] grid-cols-4 gap-3">
+              <div className="grid min-w-[1300px] grid-cols-5 gap-3">
                 {statusOrder.map((status) => (
                   <div
                     key={status}
@@ -470,7 +488,12 @@ export default function Home() {
                             <p className="mb-2 line-clamp-2 text-xs text-zinc-400">{task.description}</p>
                             <div className="mb-2 flex flex-wrap gap-1">
                               {task.tags.map((tag) => (
-                                <span key={tag} className="rounded-full bg-zinc-800 px-2 py-[2px] text-[10px] text-zinc-300">
+                                <span
+                                  key={tag}
+                                  className={`rounded-full px-2 py-[2px] text-[10px] ${
+                                    tag.toLowerCase() === "auto" ? "bg-violet-900/70 text-violet-200" : "bg-zinc-800 text-zinc-300"
+                                  }`}
+                                >
                                   {tag}
                                 </span>
                               ))}
@@ -502,6 +525,14 @@ export default function Home() {
                                   className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300 disabled:opacity-30"
                                 >
                                   →
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => assignToPanda(task.id)}
+                                  disabled={task.owner === "Panda"}
+                                  className="rounded bg-zinc-800 px-2 py-1 text-xs text-violet-300 disabled:opacity-40"
+                                >
+                                  Panda
                                 </button>
                                 <button
                                   type="button"
