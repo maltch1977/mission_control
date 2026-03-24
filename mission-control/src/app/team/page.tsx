@@ -312,28 +312,6 @@ export default function TeamPage() {
             </form>
           </section>
 
-          <section className="mb-6">
-            <div className="mx-auto max-w-2xl rounded-3xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-5 shadow-[0_0_0_1px_rgba(139,92,246,0.2),0_14px_38px_rgba(0,0,0,0.35)]">
-              <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
-                Chief of Staff
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-4">
-                  <div className="text-3xl">🐼</div>
-                  <div>
-                    <p className="text-3xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
-                    <p className="text-sm text-violet-300">{chief.role}</p>
-                    <p className="text-sm text-zinc-300">{modelLabel(chief.model)}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className={`inline-flex rounded-full px-2.5 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status.toUpperCase()}</span>
-                  <p className="mt-2 text-xs text-zinc-400">{chief.last_active}</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
           <section className="mb-6 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-semibold">Routing Visualizer</p>
@@ -400,6 +378,28 @@ export default function TeamPage() {
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mb-6">
+            <div className="mx-auto max-w-2xl rounded-3xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-5 shadow-[0_0_0_1px_rgba(139,92,246,0.2),0_14px_38px_rgba(0,0,0,0.35)]">
+              <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                Chief of Staff
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-4">
+                  <div className="text-3xl">🐼</div>
+                  <div>
+                    <p className="text-3xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
+                    <p className="text-sm text-violet-300">{chief.role}</p>
+                    <p className="text-sm text-zinc-300">{modelLabel(chief.model)}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className={`inline-flex rounded-full px-2.5 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status.toUpperCase()}</span>
+                  <p className="mt-2 text-xs text-zinc-400">{chief.last_active}</p>
                 </div>
               </div>
             </div>
