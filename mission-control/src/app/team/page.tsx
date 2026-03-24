@@ -239,7 +239,7 @@ export default function TeamPage() {
                   <div className="mb-3 flex items-center justify-between">
                     <div>
                       <p className="text-xl font-semibold tracking-tight">{cfg.title}</p>
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">Model {lead?.model || cfg.modelDefault}</p>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{lead?.model || cfg.modelDefault}</p>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-xs ${cfg.badge}`}>{activeCount} active</span>
                   </div>
