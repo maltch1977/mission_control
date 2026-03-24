@@ -22,11 +22,24 @@ create table if not exists public.activity (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.scheduled_runs (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  cadence text not null,
+  next_run text not null,
+  owner text not null default 'Panda',
+  created_at timestamptz not null default now()
+);
+
 alter table public.tasks enable row level security;
 alter table public.activity enable row level security;
+alter table public.scheduled_runs enable row level security;
 
 drop policy if exists tasks_all_anon on public.tasks;
 create policy tasks_all_anon on public.tasks for all to anon using (true) with check (true);
 
 drop policy if exists activity_all_anon on public.activity;
 create policy activity_all_anon on public.activity for all to anon using (true) with check (true);
+
+drop policy if exists scheduled_runs_all_anon on public.scheduled_runs;
+create policy scheduled_runs_all_anon on public.scheduled_runs for all to anon using (true) with check (true);

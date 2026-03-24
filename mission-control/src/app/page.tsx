@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
 
 type TaskStatus = "recurring" | "backlog" | "in-progress" | "review" | "done";
@@ -71,7 +72,6 @@ const seedActivity: Activity[] = [
   },
 ];
 
-const navItems = ["Tasks", "Agents", "Approvals", "Calendar", "Projects", "Memory", "Docs", "Office", "Team"];
 
 const statusLabels: Record<TaskStatus, string> = {
   recurring: "Recurring",
@@ -380,27 +380,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100">
       <div className="flex min-h-screen w-full">
-        <aside className="hidden w-64 shrink-0 border-r border-zinc-800/80 bg-[#0d0d10] p-5 lg:block">
-          <div className="mb-6 flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-violet-500/90" />
-            <p className="text-sm font-semibold tracking-wide">Mission Control</p>
-          </div>
-          <nav className="space-y-1">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${
-                  item === "Tasks"
-                    ? "bg-zinc-800 text-zinc-50"
-                    : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
-                }`}
-                type="button"
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-        </aside>
+        <Sidebar />
 
         <main className="flex-1 p-4 md:p-6">
           <header className="mb-4 flex items-center justify-between">
