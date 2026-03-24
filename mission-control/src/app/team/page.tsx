@@ -378,10 +378,10 @@ export default function TeamPage() {
             </div>
           </section>
 
-          <section className="mb-6">
+          <section className="mb-6 flex justify-center">
             <article
               onClick={() => beginEdit(chief)}
-              className="w-full max-w-[430px] cursor-pointer rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition hover:border-zinc-700"
+              className="w-full max-w-[420px] cursor-pointer rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition hover:border-zinc-700"
             >
               <div className="mb-4 flex items-center justify-between">
                 <div>
