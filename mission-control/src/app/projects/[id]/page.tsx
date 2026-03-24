@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
@@ -47,6 +47,7 @@ function projectTag(name: string) {
 }
 
 export default function ProjectDetailPage() {
+  const router = useRouter();
   const params = useParams<{ id: string }>();
   const id = params?.id;
 
@@ -112,6 +113,13 @@ export default function ProjectDetailPage() {
     return { done, active, progress };
   }, [tasks]);
 
+  const projectTags = useMemo(() => {
+    const set = new Set<string>();
+    memory.forEach((m) => (Array.isArray(m.tags) ? m.tags : []).forEach((t) => set.add(t)));
+    set.add(projectTag(project?.name || "general"));
+    return Array.from(set).slice(0, 12);
+  }, [memory, project]);
+
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100">
       <div className="flex min-h-screen w-full">
@@ -133,6 +141,17 @@ export default function ProjectDetailPage() {
             <Stat label="Active Tasks" value={String(stats.active)} />
             <Stat label="Done Tasks" value={String(stats.done)} />
             <Stat label="Memory Notes" value={String(memory.length)} />
+          </section>
+
+          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500">Project Tags</p>
+            <div className="flex flex-wrap gap-1.5">
+              {projectTags.map((tag) => (
+                <span key={tag} className="rounded-full bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </section>
 
           <div className="grid gap-4 xl:grid-cols-3">
@@ -162,11 +181,16 @@ export default function ProjectDetailPage() {
                     <p className="text-sm text-zinc-500">No memory entries linked yet.</p>
                   ) : (
                     memory.slice(0, 8).map((m) => (
-                      <article key={m.id} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => router.push(`/memory?entry=${m.id}`)}
+                        className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 p-3 text-left hover:border-zinc-700"
+                      >
                         <p className="text-sm font-medium">{m.title}</p>
                         <p className="mt-1 text-xs text-zinc-400">{m.date_key}</p>
                         <p className="mt-1 line-clamp-2 text-xs text-zinc-500">{m.summary}</p>
-                      </article>
+                      </button>
                     ))
                   )}
                 </div>

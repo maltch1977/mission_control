@@ -87,6 +87,10 @@ function sectionize(content: string) {
 }
 
 export default function MemoryPage() {
+  const [entryParam] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return new URLSearchParams(window.location.search).get("entry");
+  });
   const [entries, setEntries] = useState<MemoryEntry[]>(seedEntries);
   const [selectedId, setSelectedId] = useState<string>(seedEntries[0]?.id || "");
   const [longTerm, setLongTerm] = useState<LongTermMemory>(seedLongTerm);
@@ -121,13 +125,13 @@ export default function MemoryPage() {
           tags: Array.isArray(r.tags) ? r.tags : [],
         }));
         setEntries(rows);
-        setSelectedId(rows[0].id);
+        setSelectedId(entryParam && rows.some((r) => r.id === entryParam) ? entryParam : rows[0].id);
       }
       if (ltRows && ltRows.length > 0) setLongTerm((ltRows[0] as LongTermMemory) || seedLongTerm);
     };
 
     void load();
-  }, []);
+  }, [entryParam]);
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
