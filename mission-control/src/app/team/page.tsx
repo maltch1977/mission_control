@@ -384,25 +384,30 @@ export default function TeamPage() {
           </section>
 
           <section className="mb-6">
-            <div className="mx-auto max-w-2xl rounded-3xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-5 shadow-[0_0_0_1px_rgba(139,92,246,0.2),0_14px_38px_rgba(0,0,0,0.35)]">
-              <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
-                Chief of Staff
+            <article className="mx-auto max-w-2xl rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-semibold tracking-tight">Chief of Staff</p>
+                  <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{modelLabel(chief.model)}</p>
+                </div>
+                <span className="rounded-full px-2.5 py-1 text-xs text-violet-200 bg-violet-500/20 border border-violet-400/30">Core</span>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-4">
-                  <div className="text-3xl">🐼</div>
-                  <div>
-                    <p className="text-3xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
-                    <p className="text-sm text-violet-300">{chief.role}</p>
-                    <p className="text-sm text-zinc-300">{modelLabel(chief.model)}</p>
+
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">🐼</div>
+                    <div>
+                      <p className="text-lg font-semibold">{chief.name}</p>
+                      <p className="text-xs text-zinc-400">{chief.role}</p>
+                    </div>
                   </div>
+                  <span className={`rounded-full px-2 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status}</span>
                 </div>
-                <div className="text-right">
-                  <span className={`inline-flex rounded-full px-2.5 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status.toUpperCase()}</span>
-                  <p className="mt-2 text-xs text-zinc-400">{chief.last_active}</p>
-                </div>
+                <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(chief.model)}</span></p>
+                <p className="mt-1 text-xs text-zinc-500">{chief.last_active}</p>
               </div>
-            </div>
+            </article>
           </section>
 
           {editingId && (
