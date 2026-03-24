@@ -144,6 +144,24 @@ const roleModelDefaults: Record<string, string> = {
   "Security/Ops": "Kimi",
 };
 
+function modelLabel(model: string) {
+  const m = model.toLowerCase();
+  if (m.includes("kimi")) return "Kimi 2.5K";
+  if (m.includes("sonnet")) return "Sonnet";
+  if (m.includes("opus")) return "Opus";
+  if (m.includes("codex")) return "Codex";
+  return model;
+}
+
+function backupModel(primary: string) {
+  const m = primary.toLowerCase();
+  if (m.includes("kimi")) return "Codex";
+  if (m.includes("sonnet")) return "Kimi 2.5K";
+  if (m.includes("codex")) return "Kimi 2.5K";
+  if (m.includes("opus")) return "Sonnet";
+  return "Kimi 2.5K";
+}
+
 function statusPill(status: AgentStatus) {
   if (status === "working") return "bg-emerald-900/60 text-emerald-300";
   if (status === "blocked") return "bg-rose-900/60 text-rose-300";
@@ -239,7 +257,7 @@ export default function TeamPage() {
                   <div className="mb-3 flex items-center justify-between">
                     <div>
                       <p className="text-xl font-semibold tracking-tight">{cfg.title}</p>
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{lead?.model || cfg.modelDefault}</p>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{modelLabel(lead?.model || cfg.modelDefault)}</p>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-xs ${cfg.badge}`}>{activeCount} active</span>
                   </div>
@@ -252,7 +270,7 @@ export default function TeamPage() {
                       </div>
                       <span className={`rounded-full px-2 py-1 text-xs ${statusPill(leadStatus)}`}>{leadStatus}</span>
                     </div>
-                    <p className="mt-2 text-xs text-zinc-400">Model: <span className="text-zinc-200">{lead?.model || cfg.modelDefault}</span></p>
+                    <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(lead?.model || cfg.modelDefault)}</span></p>
                     <p className="mt-1 text-xs text-zinc-500">{lead?.last_active || "today"} · {activeCount} tasks</p>
                   </div>
 
