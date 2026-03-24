@@ -63,12 +63,40 @@ create table if not exists public.long_term_memory (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  amount numeric(10,2) not null,
+  account text not null check (account in ('Brex','SoFi','Mercury')),
+  billing_cycle text null check (billing_cycle in ('monthly','yearly','weekly','unknown')),
+  renewal_date date null,
+  status text not null default 'active' check (status in ('active','canceling','canceled','trial')),
+  category text null,
+  owner text null,
+  cancel_url text null,
+  notes text null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.agents_org (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  role text not null,
+  model text not null,
+  status text not null default 'idle' check (status in ('idle','working','blocked','review')),
+  last_active text not null default 'just now',
+  mission text null,
+  created_at timestamptz not null default now()
+);
+
 alter table public.tasks enable row level security;
 alter table public.activity enable row level security;
 alter table public.scheduled_runs enable row level security;
 alter table public.projects enable row level security;
 alter table public.memory_entries enable row level security;
 alter table public.long_term_memory enable row level security;
+alter table public.subscriptions enable row level security;
+alter table public.agents_org enable row level security;
 
 drop policy if exists tasks_all_anon on public.tasks;
 create policy tasks_all_anon on public.tasks for all to anon using (true) with check (true);
@@ -90,10 +118,6 @@ create policy long_term_memory_all_anon on public.long_term_memory for all to an
 
 drop policy if exists subscriptions_all_anon on public.subscriptions;
 create policy subscriptions_all_anon on public.subscriptions for all to anon using (true) with check (true);
-ue) with check (true);
 
-drop policy if exists memory_entries_all_anon on public.memory_entries;
-create policy memory_entries_all_anon on public.memory_entries for all to anon using (true) with check (true);
-
-drop policy if exists long_term_memory_all_anon on public.long_term_memory;
-create policy long_term_memory_all_anon on public.long_term_memory for all to anon using (true) with check (true);
+drop policy if exists agents_org_all_anon on public.agents_org;
+create policy agents_org_all_anon on public.agents_org for all to anon using (true) with check (true);

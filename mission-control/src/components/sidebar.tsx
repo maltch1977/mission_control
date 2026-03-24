@@ -9,11 +9,11 @@ const navItems = [
   { label: "Projects", href: "/projects" },
   { label: "Memory", href: "/memory" },
   { label: "Subscriptions", href: "/subscriptions" },
+  { label: "Team", href: "/team" },
   { label: "Agents", href: "#" },
   { label: "Approvals", href: "#" },
   { label: "Docs", href: "#" },
   { label: "Office", href: "#" },
-  { label: "Team", href: "#" },
 ];
 
 export function Sidebar() {
