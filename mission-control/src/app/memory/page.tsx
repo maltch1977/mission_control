@@ -52,7 +52,9 @@ export default function MemoryPage() {
     const load = async () => {
       if (!supabase) return;
 
-      const [{ data: memoryRows }, { data: ltRows }] = await Promise.all([
+      const today = new Date().toISOString().slice(0, 10);
+
+      const [{ data: memoryRows }, { data: ltRows }, { data: taskRows }] = await Promise.all([
         supabase
           .from("memory_entries")
           .select("id,title,date_key,summary,content,word_count,updated_ago")
@@ -62,10 +64,36 @@ export default function MemoryPage() {
           .select("id,title,summary,updated_ago")
           .order("created_at", { ascending: false })
           .limit(1),
+        supabase.from("tasks").select("status,owner,project"),
       ]);
 
-      if (memoryRows && memoryRows.length > 0) {
-        const rows = memoryRows as MemoryEntry[];
+      const rows = (memoryRows as MemoryEntry[]) || [];
+      const hasToday = rows.some((r) => String(r.date_key).slice(0, 10) === today);
+
+      if (!hasToday) {
+        const tasks = (taskRows as { status: string; owner: string; project: string }[]) || [];
+        const active = tasks.filter((t) => t.status !== "done").length;
+        const done = tasks.filter((t) => t.status === "done").length;
+        const pandaOwned = tasks.filter((t) => t.owner === "Panda").length;
+        const projects = new Set(tasks.map((t) => t.project)).size;
+
+        const autoContent = `Daily auto-drop for ${today}. Active tasks: ${active}. Done tasks: ${done}. Panda-owned tasks: ${pandaOwned}. Active projects touched: ${projects}.`;
+
+        const autoEntry: MemoryEntry = {
+          id: crypto.randomUUID(),
+          title: "Daily Operations Snapshot",
+          date_key: today,
+          summary: `Auto log: ${active} active, ${done} done, ${projects} projects touched.`,
+          content: autoContent,
+          word_count: autoContent.split(/\s+/).filter(Boolean).length,
+          updated_ago: "just now",
+        };
+
+        await supabase.from("memory_entries").insert(autoEntry);
+        rows.unshift(autoEntry);
+      }
+
+      if (rows.length > 0) {
         setEntries(rows);
         setSelectedId(rows[0].id);
       }
