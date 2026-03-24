@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
@@ -175,7 +176,9 @@ export default function ProjectsPage() {
             {projectCards.map((project) => (
               <article key={project.id} className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
-                  <h2 className="text-lg font-semibold text-zinc-100">{project.name}</h2>
+                  <Link href={`/projects/${project.id}`} className="text-lg font-semibold text-zinc-100 hover:text-violet-300">
+                    {project.name}
+                  </Link>
                   <span className={`rounded-full px-2 py-1 text-xs ${statusPill(project.status)}`}>{project.status}</span>
                 </div>
 
