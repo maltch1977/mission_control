@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
@@ -56,6 +56,7 @@ function priorityPill(priority: ProjectMeta["priority"]) {
 }
 
 export default function ProjectsPage() {
+  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [meta, setMeta] = useState<ProjectMeta[]>(seedMeta);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -174,11 +175,13 @@ export default function ProjectsPage() {
 
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {projectCards.map((project) => (
-              <article key={project.id} className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
+              <article
+                key={project.id}
+                onClick={() => router.push(`/projects/${project.id}`)}
+                className="cursor-pointer rounded-xl border border-zinc-800 bg-[#0e0e12] p-4 transition hover:border-zinc-700 hover:bg-zinc-900/60"
+              >
                 <div className="mb-3 flex items-center justify-between gap-2">
-                  <Link href={`/projects/${project.id}`} className="text-lg font-semibold text-zinc-100 hover:text-violet-300">
-                    {project.name}
-                  </Link>
+                  <h2 className="text-lg font-semibold text-zinc-100">{project.name}</h2>
                   <span className={`rounded-full px-2 py-1 text-xs ${statusPill(project.status)}`}>{project.status}</span>
                 </div>
 
@@ -205,8 +208,26 @@ export default function ProjectsPage() {
                 </div>
 
                 <div className="mt-3 flex gap-2">
-                  <button type="button" onClick={() => beginEdit(project)} className="rounded bg-zinc-800 px-2 py-1 text-xs">Edit</button>
-                  <button type="button" onClick={() => removeProject(project.id)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300">Delete</button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      beginEdit(project);
+                    }}
+                    className="rounded bg-zinc-800 px-2 py-1 text-xs"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeProject(project.id);
+                    }}
+                    className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300"
+                  >
+                    Delete
+                  </button>
                 </div>
               </article>
             ))}
