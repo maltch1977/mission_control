@@ -90,6 +90,7 @@ Maintainer: Panda
 - Skill quality drift detected (`canvas` missing frontmatter; `model-usage` has unresolved Linux TODO; `ordercli` marked partial/WIP for Deliveroo support)
 - Skills availability mostly dependency-gated (many non-ready skills due to missing binaries/API keys/platform requirements, not broken metadata)
 - `skill-creator` maintenance drift: validator rejects real skill keys (`homepage`), stale `utils/` path references, and symlink policy mismatch (docs say fail, script skips)
+- `skill-creator` has dangling internal doc references (example links formatted as real files that do not exist)
 - Skill schema-doc drift: current production skills use extra frontmatter fields while `skill-creator` guidance implies strict `name` + `description`
 - `gh-issues` consistency drift: body claims curl-only/no `gh`, while metadata still requires `gh`
 - `gh-issues` maintainability risk: SKILL.md is very large and should likely be split into references/
