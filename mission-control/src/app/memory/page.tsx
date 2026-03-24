@@ -92,6 +92,7 @@ export default function MemoryPage() {
   const [longTerm, setLongTerm] = useState<LongTermMemory>(seedLongTerm);
 
   const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState<string>("all");
 
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
@@ -128,11 +129,21 @@ export default function MemoryPage() {
     void load();
   }, []);
 
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    entries.forEach((e) => (e.tags || []).forEach((t) => tags.add(t)));
+    return ["all", ...Array.from(tags).sort()];
+  }, [entries]);
+
   const filteredEntries = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return entries;
-    return entries.filter((e) => `${e.title} ${e.summary} ${e.content} ${(e.tags || []).join(" ")}`.toLowerCase().includes(q));
-  }, [entries, query]);
+    return entries.filter((e) => {
+      const matchesTag = activeTag === "all" || (e.tags || []).includes(activeTag);
+      const hay = `${e.title} ${e.summary} ${e.content} ${(e.tags || []).join(" ")}`.toLowerCase();
+      const matchesSearch = !q || hay.includes(q);
+      return matchesTag && matchesSearch;
+    });
+  }, [entries, query, activeTag]);
 
   const selected = useMemo(
     () => filteredEntries.find((entry) => entry.id === selectedId) ?? filteredEntries[0],
@@ -210,8 +221,25 @@ export default function MemoryPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search entries, projects, decisions..."
-                className="mb-4 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-500"
+                className="mb-3 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-500"
               />
+
+              <div className="mb-4 flex flex-wrap gap-1.5">
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setActiveTag(tag)}
+                    className={`rounded-full px-2.5 py-1 text-[11px] transition ${
+                      activeTag === tag
+                        ? "bg-violet-600 text-white"
+                        : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
 
               <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3.5">
                 <input value={longTerm.title} onChange={(e) => setLongTerm((p) => ({ ...p, title: e.target.value }))} className="w-full rounded bg-zinc-800 px-2 py-1 text-sm font-semibold" />
