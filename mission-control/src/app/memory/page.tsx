@@ -53,12 +53,40 @@ function chipClass(tag: string) {
   return "bg-zinc-800 text-zinc-300";
 }
 
-function parseTags(raw: string) {
-  return raw
+function inferTags(text: string) {
+  const t = text.toLowerCase();
+  const tags: string[] = [];
+  const add = (tag: string) => {
+    if (!tags.includes(tag)) tags.push(tag);
+  };
+
+  if (t.includes("hms")) add("project:hms");
+  if (t.includes("kepter sports")) add("project:kepter-sports");
+  if (t.includes("kepter website") || t.includes("site app")) add("project:kepter-website");
+  if (t.includes("kepter")) add("project:kepter");
+  if (t.includes("social media")) add("project:social-media");
+  if (t.includes("black letter tech")) add("project:black-letter-tech");
+  if (!tags.some((x) => x.startsWith("project:"))) add("project:general");
+
+  if (t.includes("decide") || t.includes("decision")) add("type:decision");
+  else if (t.includes("blocker") || t.includes("stuck")) add("type:blocker");
+  else if (t.includes("idea")) add("type:idea");
+  else add("type:task-seed");
+
+  return tags;
+}
+
+function parseTags(raw: string, textForInference: string) {
+  const manual = raw
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean)
     .slice(0, 8);
+
+  const inferred = inferTags(textForInference);
+  const combined = Array.from(new Set([...manual, ...inferred]));
+  if (!combined.some((t) => t.startsWith("owner:"))) combined.push("owner:chad");
+  return combined.slice(0, 10);
 }
 
 function nowDate() {
@@ -193,7 +221,7 @@ export default function MemoryPage() {
       content: cleanContent,
       word_count: cleanContent.split(/\s+/).filter(Boolean).length,
       updated_ago: "just now",
-      tags: parseTags(tagsRaw),
+      tags: parseTags(tagsRaw, `${title} ${summary} ${cleanContent}`),
       source,
       importance,
     };
