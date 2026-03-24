@@ -8,11 +8,16 @@ type TaskStatus = "recurring" | "backlog" | "in-progress" | "review" | "done";
 type Priority = "high" | "med" | "low";
 type Owner = "Chad" | "Panda";
 
+type ModelTier = "cheap" | "standard" | "premium";
+
 type Task = {
   id: string;
   title: string;
   description: string;
   owner: Owner;
+  ownerAgent: string;
+  modelTier: ModelTier;
+  role?: string;
   project: string;
   updated: string;
   priority: Priority;
@@ -33,6 +38,9 @@ type DbTask = {
   title: string;
   description: string;
   owner: Owner;
+  owner_agent?: string;
+  model_tier?: ModelTier;
+  role?: string | null;
   project: string;
   updated: string;
   priority: Priority;
@@ -54,6 +62,9 @@ const seedTasks: Task[] = [
     title: "Build Mission Control task board v2",
     description: "Add persistence, drag/drop, edit and delete actions.",
     owner: "Panda",
+    ownerAgent: "Forge",
+    modelTier: "standard",
+    role: "engineering",
     project: "Mission Control",
     updated: "just now",
     priority: "high",
@@ -114,6 +125,9 @@ type TaskDraft = {
   title: string;
   description: string;
   owner: Owner;
+  ownerAgent: string;
+  modelTier: ModelTier;
+  role: string;
   project: string;
   priority: Priority;
   dueDate: string;
@@ -124,6 +138,9 @@ const emptyDraft: TaskDraft = {
   title: "",
   description: "",
   owner: "Panda",
+  ownerAgent: "Panda",
+  modelTier: "cheap",
+  role: "operations",
   project: "",
   priority: "med",
   dueDate: "",
@@ -140,6 +157,9 @@ function toDbTask(task: Task) {
     title: task.title,
     description: task.description,
     owner: task.owner,
+    owner_agent: task.ownerAgent,
+    model_tier: task.modelTier,
+    role: task.role ?? null,
     project: task.project,
     updated: task.updated,
     priority: task.priority,
@@ -155,6 +175,9 @@ function fromDbTask(row: DbTask): Task {
     title: row.title,
     description: row.description,
     owner: row.owner,
+    ownerAgent: row.owner_agent || row.owner,
+    modelTier: row.model_tier || "cheap",
+    role: row.role || undefined,
     project: row.project,
     updated: row.updated,
     priority: row.priority,
@@ -267,6 +290,9 @@ export default function Home() {
       title: task.title,
       description: task.description,
       owner: task.owner,
+      ownerAgent: task.ownerAgent,
+      modelTier: task.modelTier,
+      role: task.role || "operations",
       project: task.project,
       priority: task.priority,
       dueDate: task.dueDate || "",
@@ -288,6 +314,9 @@ export default function Home() {
             title,
             description: taskDraft.description.trim() || "No description provided.",
             owner: taskDraft.owner,
+            ownerAgent: taskDraft.ownerAgent,
+            modelTier: taskDraft.modelTier,
+            role: taskDraft.role,
             project: taskDraft.project.trim() || "General",
             priority: taskDraft.priority,
             dueDate: taskDraft.dueDate || undefined,
@@ -309,6 +338,9 @@ export default function Home() {
       title,
       description: taskDraft.description.trim() || "No description provided.",
       owner: taskDraft.owner,
+      ownerAgent: taskDraft.ownerAgent,
+      modelTier: taskDraft.modelTier,
+      role: taskDraft.role,
       project: taskDraft.project.trim() || "General",
       priority: taskDraft.priority,
       status: "backlog",
@@ -330,6 +362,11 @@ export default function Home() {
         const destination = direction === "forward" ? nextStatus[task.status] : prevStatus[task.status];
         if (!destination) return task;
 
+        if (destination === "in-progress" && (!task.ownerAgent || !task.modelTier)) {
+          pushActivity({ agent: "Panda", text: `Blocked move to In Progress for "${task.title}". Set owner agent and model tier.` });
+          return task;
+        }
+
         const updatedTask = { ...task, status: destination, updated: nowLabel() };
         void saveTask(updatedTask);
         pushActivity({
@@ -345,6 +382,10 @@ export default function Home() {
     setTasks((prev) =>
       prev.map((task) => {
         if (task.id !== taskId || task.status === destination) return task;
+        if (destination === "in-progress" && (!task.ownerAgent || !task.modelTier)) {
+          pushActivity({ agent: "Panda", text: `Blocked move to In Progress for "${task.title}". Set owner agent and model tier.` });
+          return task;
+        }
         const updatedTask = { ...task, status: destination, updated: nowLabel() };
         void saveTask(updatedTask);
         pushActivity({
@@ -360,7 +401,7 @@ export default function Home() {
     setTasks((prev) =>
       prev.map((task) => {
         if (task.id !== taskId || task.owner === "Panda") return task;
-        const updatedTask = { ...task, owner: "Panda" as Owner, updated: nowLabel() };
+        const updatedTask = { ...task, owner: "Panda" as Owner, ownerAgent: "Panda", updated: nowLabel() };
         void saveTask(updatedTask);
         pushActivity({ agent: "Panda", text: `Task assigned to Panda: ${task.title}` });
         return updatedTask;
@@ -402,6 +443,9 @@ export default function Home() {
               <input value={taskDraft.title} onChange={(e) => setTaskDraft((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="md:col-span-3 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
               <input value={taskDraft.project} onChange={(e) => setTaskDraft((p) => ({ ...p, project: e.target.value }))} placeholder="Project" className="md:col-span-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
               <select value={taskDraft.owner} onChange={(e) => setTaskDraft((p) => ({ ...p, owner: e.target.value as Owner }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option>Panda</option><option>Chad</option></select>
+              <input value={taskDraft.ownerAgent} onChange={(e) => setTaskDraft((p) => ({ ...p, ownerAgent: e.target.value }))} placeholder="Owner agent" className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
+              <select value={taskDraft.modelTier} onChange={(e) => setTaskDraft((p) => ({ ...p, modelTier: e.target.value as ModelTier }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="cheap">cheap</option><option value="standard">standard</option><option value="premium">premium</option></select>
+              <input value={taskDraft.role} onChange={(e) => setTaskDraft((p) => ({ ...p, role: e.target.value }))} placeholder="Role" className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
               <select value={taskDraft.priority} onChange={(e) => setTaskDraft((p) => ({ ...p, priority: e.target.value as Priority }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
               <input type="date" value={taskDraft.dueDate} onChange={(e) => setTaskDraft((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
               <input value={taskDraft.tags} onChange={(e) => setTaskDraft((p) => ({ ...p, tags: e.target.value }))} placeholder="tags: auto, launch" className="md:col-span-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
@@ -438,6 +482,7 @@ export default function Home() {
                             <p className="mb-2 line-clamp-2 text-xs text-zinc-400">{task.description}</p>
                             <div className="mb-2 flex flex-wrap gap-1">{task.tags.map((tag) => <span key={tag} className={`rounded-full px-2 py-[2px] text-[10px] ${tag.toLowerCase() === "auto" ? "bg-violet-900/70 text-violet-200" : "bg-zinc-800 text-zinc-300"}`}>{tag}</span>)}</div>
                             <div className="flex items-center justify-between text-xs"><span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{task.project}</span><span className="text-zinc-500">{task.dueDate ? `Due ${task.dueDate}` : task.updated}</span></div>
+                            <p className="mt-1 text-[11px] text-zinc-500">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}</p>
                             <div className="mt-3 flex items-center justify-between gap-2">
                               <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-semibold text-zinc-100">{initials(task.owner)}</span><span className="text-xs text-zinc-400">{task.owner}</span></div>
                               <div className="flex items-center gap-1">
