@@ -262,7 +262,7 @@ export default function TeamPage() {
   const routingEvents = useMemo(() => {
     return tasks
       .filter((t) => !!t.parent_task_id)
-      .slice(0, 8)
+      .slice(0, 12)
       .map((t) => ({
         id: t.id,
         to: t.owner,
@@ -270,6 +270,19 @@ export default function TeamPage() {
         time: t.updated || "recently",
       }));
   }, [tasks]);
+
+  const routeActive = useMemo(() => {
+    const keys = new Set<string>();
+    for (const e of routingEvents) {
+      const to = e.to.toLowerCase();
+      if (to.includes("forge") || to.includes("engineering")) keys.add("eng");
+      if (to.includes("atlas") || to.includes("research")) keys.add("research");
+      if (to.includes("mr x") || to.includes("social")) keys.add("social");
+      if (to.includes("ledger") || to.includes("finance")) keys.add("finance");
+      if (to.includes("sentinel") || to.includes("security")) keys.add("security");
+    }
+    return keys;
+  }, [routingEvents]);
 
   const chief = useMemo(() => agents.find((a) => a.name.toLowerCase() === "panda") || seeds[0], [agents]);
 
@@ -346,14 +359,14 @@ export default function TeamPage() {
                   <rect x="230" y="152" width="140" height="52" rx="12" fill="#3a1a24" stroke="#f472b6" />
                   <text x="300" y="182" fill="#fbcfe8" textAnchor="middle" fontSize="11">Social</text>
 
-                  <line x1="160" y1="96" x2="230" y2="46" stroke="#a78bfa" strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />
+                  <line x1="160" y1="96" x2="230" y2="46" stroke={routeActive.has("eng") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
+                    {routeActive.has("eng") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
                   </line>
-                  <line x1="160" y1="110" x2="230" y2="112" stroke="#a78bfa" strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />
+                  <line x1="160" y1="110" x2="230" y2="112" stroke={routeActive.has("research") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
+                    {routeActive.has("research") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
                   </line>
-                  <line x1="160" y1="124" x2="230" y2="178" stroke="#a78bfa" strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />
+                  <line x1="160" y1="124" x2="230" y2="178" stroke={routeActive.has("social") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
+                    {routeActive.has("social") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
                   </line>
 
                   <rect x="430" y="40" width="130" height="52" rx="12" fill="#1e3022" stroke="#34d399" />
@@ -361,9 +374,15 @@ export default function TeamPage() {
                   <rect x="430" y="120" width="130" height="52" rx="12" fill="#3a280e" stroke="#f59e0b" />
                   <text x="495" y="150" fill="#fde68a" textAnchor="middle" fontSize="11">Security</text>
 
-                  <line x1="370" y1="46" x2="430" y2="66" stroke="#60a5fa" strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)" />
-                  <line x1="370" y1="112" x2="430" y2="146" stroke="#c084fc" strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)" />
-                  <line x1="370" y1="178" x2="430" y2="146" stroke="#f472b6" strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)" />
+                  <line x1="370" y1="46" x2="430" y2="66" stroke={routeActive.has("finance") ? "#60a5fa" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
+                    {routeActive.has("finance") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
+                  </line>
+                  <line x1="370" y1="112" x2="430" y2="146" stroke={routeActive.has("security") ? "#c084fc" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
+                    {routeActive.has("security") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
+                  </line>
+                  <line x1="370" y1="178" x2="430" y2="146" stroke={routeActive.has("security") ? "#f472b6" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
+                    {routeActive.has("security") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
+                  </line>
                 </svg>
               </div>
 
