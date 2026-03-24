@@ -132,6 +132,66 @@ const roleRoutingDefaults: Record<string, { ownerAgent: string; modelTier: Model
   operations: { ownerAgent: "Panda", modelTier: "cheap" },
 };
 
+type RouteRule = {
+  fromRoles: string[];
+  toAgent: string;
+  toRole: string;
+  modelTier: ModelTier;
+  triggerAny: string[];
+  note: string;
+};
+
+const routeRules: RouteRule[] = [
+  {
+    fromRoles: ["security", "research", "social", "finance", "outreach"],
+    toAgent: "Forge",
+    toRole: "engineering",
+    modelTier: "standard",
+    triggerAny: ["build", "implement", "integration", "requires:engineering", "api", "bug", "fix", "deploy"],
+    note: "Engineering implementation handoff",
+  },
+  {
+    fromRoles: ["social", "outreach", "finance", "engineering", "security"],
+    toAgent: "Atlas",
+    toRole: "research",
+    modelTier: "standard",
+    triggerAny: ["research", "analyze", "intel", "competitor", "trend", "validate", "requires:research"],
+    note: "Research and intelligence handoff",
+  },
+  {
+    fromRoles: ["research", "outreach", "finance", "engineering"],
+    toAgent: "Mr X",
+    toRole: "social",
+    modelTier: "cheap",
+    triggerAny: ["content", "post", "copy", "creative", "campaign", "social", "requires:social"],
+    note: "Content production handoff",
+  },
+  {
+    fromRoles: ["research", "social", "finance", "engineering"],
+    toAgent: "Vector",
+    toRole: "outreach",
+    modelTier: "cheap",
+    triggerAny: ["outreach", "sequence", "cold email", "prospect", "lead", "follow-up", "requires:outreach"],
+    note: "Outreach execution handoff",
+  },
+  {
+    fromRoles: ["research", "social", "engineering", "outreach", "security"],
+    toAgent: "Ledger",
+    toRole: "finance",
+    modelTier: "cheap",
+    triggerAny: ["subscription", "billing", "cost", "renewal", "spend", "budget", "invoice", "requires:finance"],
+    note: "Finance operations handoff",
+  },
+  {
+    fromRoles: ["engineering", "social", "outreach", "research", "finance"],
+    toAgent: "Sentinel",
+    toRole: "security",
+    modelTier: "cheap",
+    triggerAny: ["security", "risk", "exposure", "hardening", "token", "access", "vulnerability", "requires:security"],
+    note: "Security and hardening handoff",
+  },
+];
+
 type OwnerFilter = "all" | Owner;
 
 type TaskDraft = {
@@ -335,9 +395,11 @@ export default function Home() {
       return;
     }
 
-    const shouldDelegateToEngineering =
-      (roleLower.includes("security") || roleLower.includes("research") || roleLower.includes("social")) &&
-      (textBlob.includes("build") || textBlob.includes("implement") || textBlob.includes("integration") || textBlob.includes("requires:engineering"));
+    const matchingRule = routeRules.find((rule) => {
+      const fromMatch = rule.fromRoles.some((r) => roleLower.includes(r));
+      const triggerMatch = rule.triggerAny.some((k) => textBlob.includes(k));
+      return fromMatch && triggerMatch;
+    });
 
     if (editingTaskId) {
       setTasks((prev) => {
@@ -377,29 +439,29 @@ export default function Home() {
       role: taskDraft.role,
       project: taskDraft.project.trim() || "General",
       priority: taskDraft.priority,
-      status: shouldDelegateToEngineering ? "review" : "backlog",
+      status: matchingRule ? "review" : "backlog",
       updated: nowLabel(),
       dueDate: taskDraft.dueDate || undefined,
       tags: parseTags(taskDraft.tags),
     };
 
     const delegatedTasks: Task[] = [];
-    if (shouldDelegateToEngineering) {
+    if (matchingRule) {
       const child: Task = {
         id: crypto.randomUUID(),
-        title: `[Delegated] ${newTask.title}`,
-        description: `Auto-delegated from ${newTask.role || "task"}. Parent task id: ${newTask.id}.\n\n${newTask.description}`,
+        title: `[Delegated:${matchingRule.toRole}] ${newTask.title}`,
+        description: `Auto-delegated (${matchingRule.note}) from ${newTask.role || "task"}. Parent task id: ${newTask.id}.\n\n${newTask.description}`,
         owner: "Panda",
-        ownerAgent: "Forge",
-        modelTier: "standard",
-        role: "engineering",
+        ownerAgent: matchingRule.toAgent,
+        modelTier: matchingRule.modelTier,
+        role: matchingRule.toRole,
         parentTaskId: newTask.id,
         project: newTask.project,
         priority: newTask.priority,
         status: "backlog",
         updated: nowLabel(),
         dueDate: newTask.dueDate,
-        tags: Array.from(new Set([...(newTask.tags || []), "delegated", "requires:engineering"])),
+        tags: Array.from(new Set([...(newTask.tags || []), "delegated", `requires:${matchingRule.toRole}`])),
       };
       delegatedTasks.push(child);
     }
@@ -409,9 +471,10 @@ export default function Home() {
     delegatedTasks.forEach((t) => void saveTask(t));
 
     if (delegatedTasks.length > 0) {
+      const child = delegatedTasks[0];
       pushActivity({
         agent: "Panda",
-        text: `Auto-delegated "${newTask.title}" to Engineering (Forge). Parent moved to review until child task completes.`,
+        text: `Auto-delegated "${newTask.title}" to ${child.ownerAgent} (${child.role}). Parent moved to review until child task completes.`,
       });
     } else {
       pushActivity({ agent: newTask.owner, text: `Created task: ${newTask.title}` });
@@ -543,7 +606,8 @@ export default function Home() {
             ))}
           </section>
 
-          <p className="mb-4 text-xs text-zinc-500">Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> so Panda can prioritize them during heartbeat sweeps.</p>
+          <p className="mb-2 text-xs text-zinc-500">Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> so Panda can prioritize them during heartbeat sweeps.</p>
+          <p className="mb-4 text-xs text-zinc-500">Auto-delegation matrix is active across Security, Research, Social, Outreach, Finance, and Engineering based on role + trigger keywords/tags.</p>
 
           <div className="space-y-4">
             <section className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
