@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
@@ -22,6 +23,11 @@ type LongTermMemory = {
   title: string;
   summary: string;
   updated_ago: string;
+};
+
+type ProjectMeta = {
+  id: string;
+  name: string;
 };
 
 const seedEntries: MemoryEntry[] = [
@@ -53,6 +59,10 @@ function parseTags(raw: string) {
     .map((t) => t.trim())
     .filter(Boolean)
     .slice(0, 10);
+}
+
+function projectTagFromName(name: string) {
+  return `project:${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
 }
 
 function nowDate() {
@@ -92,6 +102,7 @@ export default function MemoryPage() {
   const [entries, setEntries] = useState<MemoryEntry[]>(seedEntries);
   const [selectedId, setSelectedId] = useState<string>(seedEntries[0]?.id || "");
   const [longTerm, setLongTerm] = useState<LongTermMemory>(seedLongTerm);
+  const [projects, setProjects] = useState<ProjectMeta[]>([]);
 
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string>("all");
@@ -105,7 +116,7 @@ export default function MemoryPage() {
     const load = async () => {
       if (!supabase) return;
 
-      const [{ data: memoryRows }, { data: ltRows }] = await Promise.all([
+      const [{ data: memoryRows }, { data: ltRows }, { data: projectRows }] = await Promise.all([
         supabase
           .from("memory_entries")
           .select("id,title,date_key,summary,content,word_count,updated_ago,tags,source,importance")
@@ -115,6 +126,7 @@ export default function MemoryPage() {
           .select("id,title,summary,updated_ago")
           .order("created_at", { ascending: false })
           .limit(1),
+        supabase.from("projects").select("id,name"),
       ]);
 
       if (memoryRows && memoryRows.length > 0) {
@@ -126,6 +138,7 @@ export default function MemoryPage() {
         setSelectedId(entryParam && rows.some((r) => r.id === entryParam) ? entryParam : rows[0].id);
       }
       if (ltRows && ltRows.length > 0) setLongTerm((ltRows[0] as LongTermMemory) || seedLongTerm);
+      if (projectRows) setProjects(projectRows as ProjectMeta[]);
     };
 
     void load();
@@ -151,6 +164,12 @@ export default function MemoryPage() {
     () => filteredEntries.find((entry) => entry.id === selectedId) ?? filteredEntries[0],
     [filteredEntries, selectedId],
   );
+
+  const selectedProjectLinks = useMemo(() => {
+    if (!selected) return [] as ProjectMeta[];
+    const selectedTags = new Set(selected.tags || []);
+    return projects.filter((p) => selectedTags.has(projectTagFromName(p.name)));
+  }, [selected, projects]);
 
   const grouped = useMemo(() => {
     const groups = new Map<string, MemoryEntry[]>();
@@ -286,6 +305,20 @@ export default function MemoryPage() {
                       {selected.title}
                     </h2>
                     <p className="mt-2 text-xs text-zinc-500">{selected.word_count} words · {selected.updated_ago}</p>
+
+                    {selectedProjectLinks.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {selectedProjectLinks.map((p) => (
+                          <Link
+                            key={p.id}
+                            href={`/projects/${p.id}`}
+                            className="rounded-full bg-violet-900/60 px-2.5 py-1 text-xs text-violet-200 hover:bg-violet-800/70"
+                          >
+                            {p.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-7">
