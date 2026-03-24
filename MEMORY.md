@@ -61,3 +61,22 @@ Chad wants intelligent model routing with predictable costs:
 - For clean per-client separation without tagging, use one Telegram bot per client and keep work in each bot DM.
 - Example naming convention: `panda_<client>_bot`.
 - If a bot token is ever pasted in chat, rotate it after setup.
+
+## Mission Control Build Direction (set 2026-03-24)
+
+- Chad chose a dedicated local Next.js Mission Control app with a clean Linear-style UI.
+- Build order is tasks-first, then add modules iteratively (calendar/cron, projects, memory, docs, team).
+- Tasks UX direction: kanban board plus live activity feed.
+
+## Deployment Reliability Lessons (set 2026-03-24)
+
+- Vercel failures were due to project config mismatch, not app code.
+- Common breakpoints: wrong framework preset and branch/root-directory mismatch.
+- Reliable fix path: create a clean Vercel project with explicit Next.js settings and correct branch/root values.
+- Keep branch naming consistent (especially `main` vs `master`) to avoid auto-detection confusion.
+
+## Copywriting Lesson (set 2026-03-24)
+
+- For HVAC outbound, Chad strongly prefers plain, situational language over generic sales phrasing.
+- Seasonal trigger framing (pre-summer readiness) worked better than jargon-heavy positioning.
+- Keep language broad enough for commercial audiences; avoid narrow terms that over-limit fit.

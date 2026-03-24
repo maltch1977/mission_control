@@ -74,6 +74,7 @@ Maintainer: Panda
 ---
 
 ## Key decisions locked
+- Mission Control direction: local-first Next.js app, tasks-first roadmap, kanban + activity feed
 - Primary model for chat is Codex
 - Kimi can be used for heavy parallel build tasks
 - Social execution should run in Karina's Telegram DM

@@ -32,6 +32,7 @@ Use this section as a rolling log of what we discussed and what changed.
 - [2026-03-24] Heartbeat 00:04 UTC: gateway still healthy with recurring qmd/slack/allowlist warnings; memory remained clean; skills audit reconfirmed `canvas` loader break and flagged dangling `skill-creator` doc references.
 - [2026-03-24] Heartbeat 01:04 UTC: gateway remains stable with no new severe faults; qmd updater failures persist as P0, memory remains clean, and skills audit still shows `canvas` frontmatter as the only hard structural blocker.
 - [2026-03-24] Heartbeat 02:04 UTC: gateway still healthy with recurring qmd/slack/allowlist warnings; memory added a reliability lesson about only claiming verified changes; skills audit reconfirmed `canvas` metadata break and flagged stale `clawd` path references plus Linux guidance gap in `model-usage`.
+- [2026-03-24] Heartbeat 03:04 UTC: gateway remains healthy with recurring tooling/config noise; memory promoted Mission Control, Vercel deploy reliability, and HVAC copywriting lessons; skills audit still confirms `canvas` frontmatter as the only hard structural blocker.
 
 ---
 
