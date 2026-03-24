@@ -8,6 +8,7 @@ create table if not exists public.tasks (
   owner_agent text not null default 'Panda',
   model_tier text not null default 'cheap' check (model_tier in ('cheap','standard','premium')),
   role text null,
+  parent_task_id uuid null,
   project text not null default 'General',
   updated text not null default 'just now',
   priority text not null check (priority in ('high','med','low')),

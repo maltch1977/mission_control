@@ -18,6 +18,7 @@ type Task = {
   ownerAgent: string;
   modelTier: ModelTier;
   role?: string;
+  parentTaskId?: string;
   project: string;
   updated: string;
   priority: Priority;
@@ -41,6 +42,7 @@ type DbTask = {
   owner_agent?: string;
   model_tier?: ModelTier;
   role?: string | null;
+  parent_task_id?: string | null;
   project: string;
   updated: string;
   priority: Priority;
@@ -189,6 +191,7 @@ function fromDbTask(row: DbTask): Task {
     ownerAgent: row.owner_agent || row.owner,
     modelTier: row.model_tier || "cheap",
     role: row.role || undefined,
+    parentTaskId: row.parent_task_id || undefined,
     project: row.project,
     updated: row.updated,
     priority: row.priority,
@@ -316,9 +319,12 @@ export default function Home() {
     const title = taskDraft.title.trim();
     if (!title) return;
 
+    const roleLower = taskDraft.role.toLowerCase();
+    const textBlob = `${taskDraft.title} ${taskDraft.description} ${taskDraft.tags}`.toLowerCase();
+
     const isPremiumAllowed =
       taskDraft.modelTier !== "premium" ||
-      (taskDraft.priority === "high" && taskDraft.role.toLowerCase().includes("strategy")) ||
+      (taskDraft.priority === "high" && roleLower.includes("strategy")) ||
       taskDraft.tags.toLowerCase().includes("allow-premium");
 
     if (!isPremiumAllowed) {
@@ -328,6 +334,10 @@ export default function Home() {
       });
       return;
     }
+
+    const shouldDelegateToEngineering =
+      (roleLower.includes("security") || roleLower.includes("research") || roleLower.includes("social")) &&
+      (textBlob.includes("build") || textBlob.includes("implement") || textBlob.includes("integration") || textBlob.includes("requires:engineering"));
 
     if (editingTaskId) {
       setTasks((prev) => {
@@ -367,15 +377,45 @@ export default function Home() {
       role: taskDraft.role,
       project: taskDraft.project.trim() || "General",
       priority: taskDraft.priority,
-      status: "backlog",
+      status: shouldDelegateToEngineering ? "review" : "backlog",
       updated: nowLabel(),
       dueDate: taskDraft.dueDate || undefined,
       tags: parseTags(taskDraft.tags),
     };
 
-    setTasks((prev) => [newTask, ...prev]);
+    const delegatedTasks: Task[] = [];
+    if (shouldDelegateToEngineering) {
+      const child: Task = {
+        id: crypto.randomUUID(),
+        title: `[Delegated] ${newTask.title}`,
+        description: `Auto-delegated from ${newTask.role || "task"}. Parent task id: ${newTask.id}.\n\n${newTask.description}`,
+        owner: "Panda",
+        ownerAgent: "Forge",
+        modelTier: "standard",
+        role: "engineering",
+        parentTaskId: newTask.id,
+        project: newTask.project,
+        priority: newTask.priority,
+        status: "backlog",
+        updated: nowLabel(),
+        dueDate: newTask.dueDate,
+        tags: Array.from(new Set([...(newTask.tags || []), "delegated", "requires:engineering"])),
+      };
+      delegatedTasks.push(child);
+    }
+
+    setTasks((prev) => [newTask, ...delegatedTasks, ...prev]);
     void saveTask(newTask);
-    pushActivity({ agent: newTask.owner, text: `Created task: ${newTask.title}` });
+    delegatedTasks.forEach((t) => void saveTask(t));
+
+    if (delegatedTasks.length > 0) {
+      pushActivity({
+        agent: "Panda",
+        text: `Auto-delegated "${newTask.title}" to Engineering (Forge). Parent moved to review until child task completes.`,
+      });
+    } else {
+      pushActivity({ agent: newTask.owner, text: `Created task: ${newTask.title}` });
+    }
     resetDraft();
   };
 
@@ -521,7 +561,7 @@ export default function Home() {
                             <p className="mb-2 line-clamp-2 text-xs text-zinc-400">{task.description}</p>
                             <div className="mb-2 flex flex-wrap gap-1">{task.tags.map((tag) => <span key={tag} className={`rounded-full px-2 py-[2px] text-[10px] ${tag.toLowerCase() === "auto" ? "bg-violet-900/70 text-violet-200" : "bg-zinc-800 text-zinc-300"}`}>{tag}</span>)}</div>
                             <div className="flex items-center justify-between text-xs"><span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{task.project}</span><span className="text-zinc-500">{task.dueDate ? `Due ${task.dueDate}` : task.updated}</span></div>
-                            <p className="mt-1 text-[11px] text-zinc-500">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}</p>
+                            <p className="mt-1 text-[11px] text-zinc-500">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}{task.parentTaskId ? ` · child of ${task.parentTaskId.slice(0, 6)}` : ""}</p>
                             <div className="mt-3 flex items-center justify-between gap-2">
                               <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-semibold text-zinc-100">{initials(task.owner)}</span><span className="text-xs text-zinc-400">{task.owner}</span></div>
                               <div className="flex items-center gap-1">
