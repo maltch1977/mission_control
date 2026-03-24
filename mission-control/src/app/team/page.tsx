@@ -30,11 +30,30 @@ const seeds: Agent[] = [
 
 const blank = { name: "", role: "", model: "Kimi", status: "idle" as AgentStatus, mission: "" };
 
+const roleModelDefaults: Record<string, string> = {
+  "Chief of Staff": "Codex",
+  "Social Media": "Kimi",
+  Research: "Sonnet",
+  Engineering: "Codex",
+  Outreach: "Kimi",
+  Finance: "Kimi",
+  "Security/Ops": "Kimi",
+};
+
 function statusClass(status: AgentStatus) {
-  if (status === "working") return "bg-emerald-900/60 text-emerald-300";
-  if (status === "blocked") return "bg-rose-900/60 text-rose-300";
-  if (status === "review") return "bg-amber-900/60 text-amber-300";
-  return "bg-zinc-800 text-zinc-300";
+  if (status === "working") return "bg-emerald-900/60 text-emerald-300 border border-emerald-700/40";
+  if (status === "blocked") return "bg-rose-900/60 text-rose-300 border border-rose-700/40";
+  if (status === "review") return "bg-amber-900/60 text-amber-300 border border-amber-700/40";
+  return "bg-zinc-800 text-zinc-300 border border-zinc-700/40";
+}
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 }
 
 export default function TeamPage() {
@@ -99,7 +118,15 @@ export default function TeamPage() {
           <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
             <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
               <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.role} onChange={(e) => setDraft((p) => ({ ...p, role: e.target.value }))} placeholder="Role" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
+              <input
+                value={draft.role}
+                onChange={(e) => {
+                  const role = e.target.value;
+                  setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model }));
+                }}
+                placeholder="Role"
+                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"
+              />
               <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
               <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
                 <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
@@ -111,18 +138,30 @@ export default function TeamPage() {
 
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {withCounts.map((agent) => (
-              <article key={agent.id} className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold">{agent.name}</h2>
-                  <span className={`rounded-full px-2 py-1 text-xs ${statusClass(agent.status)}`}>{agent.status}</span>
+              <article key={agent.id} className="rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-[#111118] to-[#0c0c10] p-4 shadow-[0_0_0_1px_rgba(39,39,42,0.2)]">
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-violet-900/60 text-sm font-semibold text-violet-200">
+                      {initials(agent.name)}
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold leading-tight">{agent.name}</h2>
+                      <p className="text-xs text-zinc-400">{agent.role}</p>
+                    </div>
+                  </div>
+                  <span className={`rounded-full px-2.5 py-1 text-xs ${statusClass(agent.status)}`}>{agent.status}</span>
                 </div>
-                <p className="text-sm text-zinc-300">{agent.role}</p>
-                <p className="mt-1 text-xs text-zinc-500">Model: {agent.model}</p>
-                <p className="text-xs text-zinc-500">Last active: {agent.last_active}</p>
-                <p className="mt-2 text-xs text-zinc-400">{agent.mission || "No mission defined."}</p>
+
+                <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
+                  <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 px-2 py-1.5 text-zinc-300">Model: {agent.model}</div>
+                  <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 px-2 py-1.5 text-zinc-300">Last active: {agent.last_active}</div>
+                </div>
+
+                <p className="text-xs leading-5 text-zinc-400">{agent.mission || "No mission defined."}</p>
+
                 <div className="mt-3 flex items-center gap-2 text-xs">
-                  <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">Active tasks: {agent.activeTasks}</span>
-                  <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">Total tasks: {agent.totalTasks}</span>
+                  <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">Active: {agent.activeTasks}</span>
+                  <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">Total: {agent.totalTasks}</span>
                 </div>
               </article>
             ))}

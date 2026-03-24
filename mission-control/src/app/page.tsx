@@ -119,6 +119,17 @@ const priorityDot: Record<Priority, string> = {
 const TASKS_KEY = "mission-control.tasks.v3";
 const ACTIVITY_KEY = "mission-control.activity.v3";
 
+const roleRoutingDefaults: Record<string, { ownerAgent: string; modelTier: ModelTier }> = {
+  "chief-of-staff": { ownerAgent: "Panda", modelTier: "standard" },
+  social: { ownerAgent: "Mr X", modelTier: "cheap" },
+  research: { ownerAgent: "Atlas", modelTier: "standard" },
+  engineering: { ownerAgent: "Forge", modelTier: "standard" },
+  outreach: { ownerAgent: "Vector", modelTier: "cheap" },
+  finance: { ownerAgent: "Ledger", modelTier: "cheap" },
+  security: { ownerAgent: "Sentinel", modelTier: "cheap" },
+  operations: { ownerAgent: "Panda", modelTier: "cheap" },
+};
+
 type OwnerFilter = "all" | Owner;
 
 type TaskDraft = {
@@ -445,7 +456,22 @@ export default function Home() {
               <select value={taskDraft.owner} onChange={(e) => setTaskDraft((p) => ({ ...p, owner: e.target.value as Owner }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option>Panda</option><option>Chad</option></select>
               <input value={taskDraft.ownerAgent} onChange={(e) => setTaskDraft((p) => ({ ...p, ownerAgent: e.target.value }))} placeholder="Owner agent" className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
               <select value={taskDraft.modelTier} onChange={(e) => setTaskDraft((p) => ({ ...p, modelTier: e.target.value as ModelTier }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="cheap">cheap</option><option value="standard">standard</option><option value="premium">premium</option></select>
-              <input value={taskDraft.role} onChange={(e) => setTaskDraft((p) => ({ ...p, role: e.target.value }))} placeholder="Role" className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
+              <input
+                value={taskDraft.role}
+                onChange={(e) => {
+                  const role = e.target.value;
+                  const key = role.trim().toLowerCase();
+                  const routing = roleRoutingDefaults[key];
+                  setTaskDraft((p) => ({
+                    ...p,
+                    role,
+                    ownerAgent: routing ? routing.ownerAgent : p.ownerAgent,
+                    modelTier: routing ? routing.modelTier : p.modelTier,
+                  }));
+                }}
+                placeholder="Role"
+                className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"
+              />
               <select value={taskDraft.priority} onChange={(e) => setTaskDraft((p) => ({ ...p, priority: e.target.value as Priority }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
               <input type="date" value={taskDraft.dueDate} onChange={(e) => setTaskDraft((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
               <input value={taskDraft.tags} onChange={(e) => setTaskDraft((p) => ({ ...p, tags: e.target.value }))} placeholder="tags: auto, launch" className="md:col-span-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
