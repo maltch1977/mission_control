@@ -20,6 +20,7 @@ type Subscription = {
   owner: string | null;
   cancel_url: string | null;
   notes: string | null;
+  created_at?: string;
 };
 
 const seed: Subscription[] = [];
@@ -37,12 +38,24 @@ const blank = {
   notes: "",
 };
 
-function daysUntil(date: string | null) {
-  if (!date) return null;
+function toISODate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+
+function inferRenewalDate(item: Subscription) {
+  if (item.renewal_date) return item.renewal_date;
+  const base = item.created_at ? new Date(item.created_at) : new Date();
+  const cycle = item.billing_cycle || "unknown";
+  if (cycle === "weekly") base.setDate(base.getDate() + 7);
+  else if (cycle === "yearly") base.setFullYear(base.getFullYear() + 1);
+  else base.setMonth(base.getMonth() + 1);
+  return toISODate(base);
+}
+
+function daysUntil(date: string) {
   const now = new Date();
   const target = new Date(`${date}T00:00:00`);
-  const diff = Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-  return diff;
+  return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export default function SubscriptionsPage() {
@@ -54,7 +67,7 @@ export default function SubscriptionsPage() {
       if (!supabase) return;
       const { data } = await supabase
         .from("subscriptions")
-        .select("id,name,amount,account,billing_cycle,renewal_date,status,category,owner,cancel_url,notes")
+        .select("id,name,amount,account,billing_cycle,renewal_date,status,category,owner,cancel_url,notes,created_at")
         .order("created_at", { ascending: false });
       if (data) setItems(data as Subscription[]);
     };
@@ -97,11 +110,24 @@ export default function SubscriptionsPage() {
 
   const upcoming = useMemo(() => {
     return items
-      .filter((i) => i.renewal_date)
-      .map((i) => ({ ...i, days: daysUntil(i.renewal_date) }))
-      .filter((i) => i.days !== null)
-      .sort((a, b) => (a.days as number) - (b.days as number));
+      .map((i) => {
+        const assumed = !i.renewal_date;
+        const date = inferRenewalDate(i);
+        return { ...i, renewal_effective: date, days: daysUntil(date), assumed };
+      })
+      .sort((a, b) => a.days - b.days);
   }, [items]);
+
+  const calendarBuckets = useMemo(() => {
+    const grouped = new Map<string, typeof upcoming>();
+    for (const row of upcoming) {
+      const key = row.renewal_effective;
+      const list = grouped.get(key) ?? [];
+      list.push(row);
+      grouped.set(key, list);
+    }
+    return Array.from(grouped.entries()).slice(0, 20);
+  }, [upcoming]);
 
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100">
@@ -158,19 +184,26 @@ export default function SubscriptionsPage() {
             </section>
 
             <aside className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-              <h2 className="mb-3 text-sm font-semibold">Upcoming Renewals</h2>
-              <div className="space-y-2">
-                {upcoming.length === 0 ? (
-                  <p className="text-sm text-zinc-500">No renewal dates added yet.</p>
+              <h2 className="mb-3 text-sm font-semibold">Renewal Calendar (Upcoming)</h2>
+              <div className="space-y-3">
+                {calendarBuckets.length === 0 ? (
+                  <p className="text-sm text-zinc-500">No subscriptions found.</p>
                 ) : (
-                  upcoming.map((u) => (
-                    <article key={u.id} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
-                      <p className="text-sm font-medium">{u.name}</p>
-                      <p className="mt-1 text-xs text-zinc-400">
-                        {u.renewal_date} · {u.days! < 0 ? "past due" : `${u.days} days`}
-                      </p>
-                      <p className="text-xs text-zinc-500">{u.account}</p>
-                    </article>
+                  calendarBuckets.map(([date, rows]) => (
+                    <div key={date}>
+                      <p className="mb-1 text-xs font-semibold text-zinc-400">{date}</p>
+                      <div className="space-y-2">
+                        {rows.map((u) => (
+                          <article key={u.id} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
+                            <p className="text-sm font-medium">{u.name}</p>
+                            <p className="mt-1 text-xs text-zinc-400">
+                              {u.days < 0 ? "past due" : `${u.days} days`} · {u.account}
+                            </p>
+                            {u.assumed && <p className="text-[11px] text-amber-300">Assumed renewal date (no exact date set)</p>}
+                          </article>
+                        ))}
+                      </div>
+                    </div>
                   ))
                 )}
               </div>
