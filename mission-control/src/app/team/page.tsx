@@ -33,8 +33,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "engineering",
     title: "Engineering",
-    accent: "from-sky-900/40 to-blue-900/20",
-    badge: "text-sky-300 bg-sky-900/50",
+    accent: "from-sky-800/40 via-indigo-900/20 to-zinc-950",
+    badge: "text-sky-200 bg-sky-500/20 border border-sky-400/30",
     leadName: "Forge",
     fallbackRole: "Engineering Lead",
     modelDefault: "Codex",
@@ -48,8 +48,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "research",
     title: "Research",
-    accent: "from-violet-900/40 to-fuchsia-900/20",
-    badge: "text-violet-300 bg-violet-900/50",
+    accent: "from-violet-800/40 via-fuchsia-900/20 to-zinc-950",
+    badge: "text-violet-200 bg-violet-500/20 border border-violet-400/30",
     leadName: "Atlas",
     fallbackRole: "Research Lead",
     modelDefault: "Sonnet",
@@ -63,8 +63,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "security",
     title: "Security & Ops",
-    accent: "from-amber-900/40 to-orange-900/20",
-    badge: "text-amber-300 bg-amber-900/50",
+    accent: "from-amber-800/40 via-orange-900/20 to-zinc-950",
+    badge: "text-amber-200 bg-amber-500/20 border border-amber-400/30",
     leadName: "Sentinel",
     fallbackRole: "Security Lead",
     modelDefault: "Kimi",
@@ -78,8 +78,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "social",
     title: "Content & Social",
-    accent: "from-pink-900/40 to-rose-900/20",
-    badge: "text-pink-300 bg-pink-900/50",
+    accent: "from-pink-800/40 via-rose-900/20 to-zinc-950",
+    badge: "text-pink-200 bg-pink-500/20 border border-pink-400/30",
     leadName: "Mr X",
     fallbackRole: "Content Lead",
     modelDefault: "Kimi",
@@ -93,8 +93,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "finance",
     title: "Finance",
-    accent: "from-emerald-900/40 to-teal-900/20",
-    badge: "text-emerald-300 bg-emerald-900/50",
+    accent: "from-emerald-800/40 via-teal-900/20 to-zinc-950",
+    badge: "text-emerald-200 bg-emerald-500/20 border border-emerald-400/30",
     leadName: "Ledger",
     fallbackRole: "Finance Lead",
     modelDefault: "Kimi",
@@ -108,8 +108,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "outreach",
     title: "Outreach",
-    accent: "from-orange-900/40 to-red-900/20",
-    badge: "text-orange-300 bg-orange-900/50",
+    accent: "from-orange-800/40 via-red-900/20 to-zinc-950",
+    badge: "text-orange-200 bg-orange-500/20 border border-orange-400/30",
     leadName: "Vector",
     fallbackRole: "Outreach Lead",
     modelDefault: "Kimi",
@@ -259,73 +259,44 @@ export default function TeamPage() {
     if (editingId === id) setEditingId(null);
   };
 
-  useEffect(() => {
-    if (!supabase || agents.length === 0) return;
-
-    const activeByAgent = new Map<string, number>();
-    tasks.forEach((t) => {
-      const key = t.owner.toLowerCase();
-      if (t.status !== "done") activeByAgent.set(key, (activeByAgent.get(key) || 0) + 1);
-    });
-
-    const updates = agents
-      .map((a) => {
-        const active = activeByAgent.get(a.name.toLowerCase()) || 0;
-        if (active > 0 && a.status === "idle") {
-          return { ...a, status: "working" as AgentStatus, last_active: "just now" };
-        }
-        if (active === 0 && a.status === "working") {
-          return { ...a, status: "review" as AgentStatus };
-        }
-        return null;
-      })
-      .filter(Boolean) as Agent[];
-
-    if (updates.length === 0) return;
-
-    const client = supabase;
-    if (!client) return;
-    updates.forEach((u) => {
-      void client.from("agents_org").upsert(u);
-    });
-  }, [tasks, agents]);
-
   const chief = useMemo(() => agents.find((a) => a.name.toLowerCase() === "panda") || seeds[0], [agents]);
 
   return (
-    <div className="min-h-screen bg-[#07070b] text-zinc-100">
+    <div className="min-h-screen bg-[#060609] text-zinc-100">
       <div className="flex min-h-screen w-full">
         <Sidebar />
-        <main className="flex-1 p-4 md:p-6">
-          <header className="mb-5 rounded-2xl border border-zinc-800/80 bg-gradient-to-r from-violet-900/30 to-indigo-900/20 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-zinc-400">Team</p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-zinc-50">Org Operations</h1>
-            <p className="mt-2 text-sm text-zinc-300">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
+        <main className="flex-1 px-5 py-6 md:px-8 md:py-8">
+          <header className="mb-6 rounded-3xl border border-zinc-800/80 bg-gradient-to-r from-violet-900/40 via-indigo-900/25 to-zinc-950 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Team</p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-zinc-50">Org Operations</h1>
+            <p className="mt-2 text-sm text-zinc-300">
+              {chief.name} · {chief.role} · {modelLabel(chief.model)}
+            </p>
           </header>
 
-          <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-3">
+          <section className="mb-6 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
             <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
-              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.role} onChange={(e) => { const role = e.target.value; setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model })); }} placeholder="Role" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
+              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
+              <input value={draft.role} onChange={(e) => { const role = e.target.value; setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model })); }} placeholder="Role" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
+              <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
+              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm">
                 <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
               </select>
-              <input value={draft.mission} onChange={(e) => setDraft((p) => ({ ...p, mission: e.target.value }))} placeholder="Mission" className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <button type="submit" className="rounded bg-violet-600 px-3 py-2 text-sm font-medium">+ Add Agent</button>
+              <input value={draft.mission} onChange={(e) => setDraft((p) => ({ ...p, mission: e.target.value }))} placeholder="Mission" className="md:col-span-2 rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
+              <button type="submit" className="rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-medium transition hover:bg-violet-500">+ Add Agent</button>
             </form>
           </section>
 
-          <section className="mb-5">
-            <div className="mx-auto max-w-xl rounded-2xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-4 shadow-[0_0_0_1px_rgba(139,92,246,0.2)]">
+          <section className="mb-6">
+            <div className="mx-auto max-w-2xl rounded-3xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-5 shadow-[0_0_0_1px_rgba(139,92,246,0.2),0_14px_38px_rgba(0,0,0,0.35)]">
               <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
                 Chief of Staff
               </div>
               <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">🐼</div>
+                <div className="flex items-center gap-4">
+                  <div className="text-3xl">🐼</div>
                   <div>
-                    <p className="text-2xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
+                    <p className="text-3xl font-semibold leading-tight text-zinc-100">{chief.name}</p>
                     <p className="text-sm text-violet-300">{chief.role}</p>
                     <p className="text-sm text-zinc-300">{modelLabel(chief.model)}</p>
                   </div>
@@ -339,44 +310,44 @@ export default function TeamPage() {
           </section>
 
           {editingId && (
-            <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
+            <section className="mb-6 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
               <p className="mb-3 text-sm font-semibold">Edit Agent</p>
               <div className="grid gap-2 md:grid-cols-6">
-                <input value={editDraft.name} onChange={(e) => setEditDraft((p) => ({ ...p, name: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Name" />
-                <input value={editDraft.role} onChange={(e) => setEditDraft((p) => ({ ...p, role: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Role" />
-                <input value={editDraft.model} onChange={(e) => setEditDraft((p) => ({ ...p, model: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Model" />
-                <select value={editDraft.status} onChange={(e) => setEditDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
+                <input value={editDraft.name} onChange={(e) => setEditDraft((p) => ({ ...p, name: e.target.value }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Name" />
+                <input value={editDraft.role} onChange={(e) => setEditDraft((p) => ({ ...p, role: e.target.value }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Role" />
+                <input value={editDraft.model} onChange={(e) => setEditDraft((p) => ({ ...p, model: e.target.value }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Model" />
+                <select value={editDraft.status} onChange={(e) => setEditDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
                   <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
                 </select>
-                <input value={editDraft.mission} onChange={(e) => setEditDraft((p) => ({ ...p, mission: e.target.value }))} className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Mission" />
+                <input value={editDraft.mission} onChange={(e) => setEditDraft((p) => ({ ...p, mission: e.target.value }))} className="md:col-span-2 rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Mission" />
               </div>
               <div className="mt-3 flex gap-2">
-                <button type="button" onClick={saveEdit} className="rounded bg-violet-600 px-3 py-2 text-sm font-medium">Save</button>
-                <button type="button" onClick={() => setEditingId(null)} className="rounded border border-zinc-700 px-3 py-2 text-sm">Cancel</button>
+                <button type="button" onClick={saveEdit} className="rounded-xl bg-violet-600 px-3 py-2 text-sm font-medium">Save</button>
+                <button type="button" onClick={() => setEditingId(null)} className="rounded-xl border border-zinc-700 px-3 py-2 text-sm">Cancel</button>
               </div>
             </section>
           )}
 
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {departmentConfigs.map((cfg) => {
               const lead = agents.find((a) => a.name.toLowerCase() === cfg.leadName.toLowerCase());
               const activeCount = departmentActiveCount(agents, cfg, tasks);
               const leadStatus = lead?.status || "idle";
 
               return (
-                <article key={cfg.key} className={`rounded-2xl border border-zinc-800/80 bg-gradient-to-b ${cfg.accent} p-4`}>
-                  <div className="mb-3 flex items-center justify-between">
+                <article key={cfg.key} className={`rounded-3xl border border-zinc-800/80 bg-gradient-to-b ${cfg.accent} p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}>
+                  <div className="mb-4 flex items-center justify-between">
                     <div>
-                      <p className="text-xl font-semibold tracking-tight">{cfg.title}</p>
+                      <p className="text-2xl font-semibold tracking-tight">{cfg.title}</p>
                       <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{modelLabel(lead?.model || cfg.modelDefault)}</p>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-xs ${cfg.badge}`}>{activeCount} active</span>
                   </div>
 
-                  <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-950/55 p-3">
+                  <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-base font-semibold">{lead?.name || cfg.leadName}</p>
+                        <p className="text-lg font-semibold">{lead?.name || cfg.leadName}</p>
                         <p className="text-xs text-zinc-400">{lead?.role || cfg.fallbackRole}</p>
                       </div>
                       <span className={`rounded-full px-2 py-1 text-xs ${statusPill(leadStatus)}`}>{leadStatus}</span>
@@ -385,8 +356,8 @@ export default function TeamPage() {
                     <p className="mt-1 text-xs text-zinc-500">{lead?.last_active || "today"} · {activeCount} tasks</p>
                     {lead && (
                       <div className="mt-3 flex gap-2">
-                        <button type="button" onClick={() => beginEdit(lead)} className="rounded bg-zinc-800 px-2 py-1 text-xs">Edit</button>
-                        <button type="button" onClick={() => removeAgent(lead.id)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300">Delete</button>
+                        <button type="button" onClick={() => beginEdit(lead)} className="rounded-lg bg-zinc-800 px-2.5 py-1 text-xs hover:bg-zinc-700">Edit</button>
+                        <button type="button" onClick={() => removeAgent(lead.id)} className="rounded-lg bg-zinc-800 px-2.5 py-1 text-xs text-rose-300 hover:bg-zinc-700">Delete</button>
                       </div>
                     )}
                   </div>
@@ -394,7 +365,7 @@ export default function TeamPage() {
                   <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">Capabilities</p>
                   <div className="space-y-1.5">
                     {cfg.capabilities.map((cap) => (
-                      <p key={cap} className="text-xs text-zinc-300">
+                      <p key={cap} className="text-sm text-zinc-200/90">
                         ✅ {cap}
                       </p>
                     ))}
