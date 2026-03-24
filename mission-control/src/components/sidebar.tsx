@@ -8,6 +8,7 @@ const navItems = [
   { label: "Calendar", href: "/calendar" },
   { label: "Projects", href: "/projects" },
   { label: "Memory", href: "/memory" },
+  { label: "Subscriptions", href: "/subscriptions" },
   { label: "Agents", href: "#" },
   { label: "Approvals", href: "#" },
   { label: "Docs", href: "#" },

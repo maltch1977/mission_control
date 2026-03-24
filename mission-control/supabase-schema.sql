@@ -87,3 +87,13 @@ create policy memory_entries_all_anon on public.memory_entries for all to anon u
 
 drop policy if exists long_term_memory_all_anon on public.long_term_memory;
 create policy long_term_memory_all_anon on public.long_term_memory for all to anon using (true) with check (true);
+
+drop policy if exists subscriptions_all_anon on public.subscriptions;
+create policy subscriptions_all_anon on public.subscriptions for all to anon using (true) with check (true);
+ue) with check (true);
+
+drop policy if exists memory_entries_all_anon on public.memory_entries;
+create policy memory_entries_all_anon on public.memory_entries for all to anon using (true) with check (true);
+
+drop policy if exists long_term_memory_all_anon on public.long_term_memory;
+create policy long_term_memory_all_anon on public.long_term_memory for all to anon using (true) with check (true);
