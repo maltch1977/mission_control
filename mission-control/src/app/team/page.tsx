@@ -253,11 +253,6 @@ export default function TeamPage() {
     setEditingId(null);
   };
 
-  const removeAgent = async (id: string) => {
-    setAgents((prev) => prev.filter((a) => a.id !== id));
-    if (supabase) await supabase.from("agents_org").delete().eq("id", id);
-    if (editingId === id) setEditingId(null);
-  };
 
   const routingEvents = useMemo(() => {
     return tasks
@@ -384,7 +379,10 @@ export default function TeamPage() {
           </section>
 
           <section className="mb-6">
-            <article className="mx-auto max-w-2xl rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+            <article
+              onClick={() => beginEdit(chief)}
+              className="w-full max-w-[430px] cursor-pointer rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition hover:border-zinc-700"
+            >
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-semibold tracking-tight">Chief of Staff</p>
@@ -458,7 +456,6 @@ export default function TeamPage() {
                     {lead && (
                       <div className="mt-3 flex gap-2">
                         <button type="button" onClick={() => beginEdit(lead)} className="rounded-lg bg-zinc-800 px-2.5 py-1 text-xs hover:bg-zinc-700">Edit</button>
-                        <button type="button" onClick={() => removeAgent(lead.id)} className="rounded-lg bg-zinc-800 px-2.5 py-1 text-xs text-rose-300 hover:bg-zinc-700">Delete</button>
                       </div>
                     )}
                   </div>
