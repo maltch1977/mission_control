@@ -303,6 +303,19 @@ export default function TeamPage() {
             <p className="mt-2 text-sm text-zinc-300">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
           </header>
 
+          <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-3">
+            <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
+              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
+              <input value={draft.role} onChange={(e) => { const role = e.target.value; setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model })); }} placeholder="Role" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
+              <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
+              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
+                <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
+              </select>
+              <input value={draft.mission} onChange={(e) => setDraft((p) => ({ ...p, mission: e.target.value }))} placeholder="Mission" className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
+              <button type="submit" className="rounded bg-violet-600 px-3 py-2 text-sm font-medium">+ Add Agent</button>
+            </form>
+          </section>
+
           <section className="mb-5">
             <div className="mx-auto max-w-xl rounded-2xl border border-violet-700/40 bg-gradient-to-b from-[#1a1530] to-[#0f0d1f] p-4 shadow-[0_0_0_1px_rgba(139,92,246,0.2)]">
               <div className="mb-3 inline-flex rounded-full bg-violet-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
@@ -323,19 +336,6 @@ export default function TeamPage() {
                 </div>
               </div>
             </div>
-          </section>
-
-          <section className="mb-5 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
-              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.role} onChange={(e) => { const role = e.target.value; setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model })); }} placeholder="Role" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
-                <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
-              </select>
-              <input value={draft.mission} onChange={(e) => setDraft((p) => ({ ...p, mission: e.target.value }))} placeholder="Mission" className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <button type="submit" className="rounded bg-violet-600 px-3 py-2 text-sm font-medium">+ Add Agent</button>
-            </form>
           </section>
 
           {editingId && (
