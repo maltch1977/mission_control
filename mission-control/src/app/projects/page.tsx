@@ -187,13 +187,21 @@ export default function ProjectsPage() {
 
                 <p className="mb-4 line-clamp-2 text-sm text-zinc-400">{project.description}</p>
 
-                <div className="mb-1 flex items-center justify-between text-xs text-zinc-500">
-                  <span>{project.progress}%</span>
-                  <span>{project.done}/{project.total}</span>
-                </div>
-                <div className="mb-4 h-2 rounded-full bg-zinc-800">
-                  <div className="h-full rounded-full bg-emerald-400" style={{ width: `${project.progress}%` }} />
-                </div>
+                {project.name.toLowerCase() !== "mission control" ? (
+                  <>
+                    <div className="mb-1 flex items-center justify-between text-xs text-zinc-500">
+                      <span>{project.progress}%</span>
+                      <span>{project.done}/{project.total}</span>
+                    </div>
+                    <div className="mb-4 h-2 rounded-full bg-zinc-800">
+                      <div className="h-full rounded-full bg-emerald-400" style={{ width: `${project.progress}%` }} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="mb-4 rounded-lg border border-zinc-800 bg-zinc-900/50 px-2.5 py-2 text-xs text-zinc-400">
+                    Ongoing project. Use active tasks and recent memory context as health indicators.
+                  </div>
+                )}
 
                 <div className="mb-3 flex items-center gap-2 text-xs">
                   <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{project.owner}</span>
