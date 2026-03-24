@@ -333,7 +333,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100">
-      <div className="mx-auto flex min-h-screen max-w-[1650px]">
+      <div className="flex min-h-screen w-full">
         <aside className="hidden w-64 shrink-0 border-r border-zinc-800/80 bg-[#0d0d10] p-5 lg:block">
           <div className="mb-6 flex items-center gap-2">
             <div className="h-7 w-7 rounded-md bg-violet-500/90" />
@@ -453,9 +453,9 @@ export default function Home() {
             Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> when you want Panda to pull them first during heartbeat checks.
           </p>
 
-          <div className="grid gap-4 xl:grid-cols-[1fr_310px]">
-            <section className="overflow-x-auto rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-              <div className="grid min-w-[1300px] grid-cols-5 gap-3">
+          <div className="space-y-4">
+            <section className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
                 {statusOrder.map((status) => (
                   <div
                     key={status}
