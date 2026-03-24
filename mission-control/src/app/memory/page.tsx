@@ -87,10 +87,8 @@ function sectionize(content: string) {
 }
 
 export default function MemoryPage() {
-  const [entryParam] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return new URLSearchParams(window.location.search).get("entry");
-  });
+  const entryParam =
+    typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("entry") : null;
   const [entries, setEntries] = useState<MemoryEntry[]>(seedEntries);
   const [selectedId, setSelectedId] = useState<string>(seedEntries[0]?.id || "");
   const [longTerm, setLongTerm] = useState<LongTermMemory>(seedLongTerm);
