@@ -49,6 +49,9 @@ create table if not exists public.memory_entries (
   content text not null default '',
   word_count int not null default 0,
   updated_ago text not null default 'just now',
+  tags jsonb not null default '[]'::jsonb,
+  source text not null default 'manual' check (source in ('manual','heartbeat','task','chat')),
+  importance text not null default 'med' check (importance in ('high','med','low')),
   created_at timestamptz not null default now()
 );
 
