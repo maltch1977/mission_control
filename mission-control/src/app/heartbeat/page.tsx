@@ -42,7 +42,8 @@ export default function HeartbeatPage() {
   const timeline = useMemo(
     () =>
       rows
-        .map((r) => ({ ...r, ts: new Date(r.created_at ?? `${r.date_key}T00:00:00Z`) }))
+        .filter((r) => !!r.created_at)
+        .map((r) => ({ ...r, ts: new Date(r.created_at as string) }))
         .sort((a, b) => b.ts.getTime() - a.ts.getTime()),
     [rows],
   );
@@ -56,16 +57,8 @@ export default function HeartbeatPage() {
       minute: "2-digit",
     });
 
-  const minutesSince = lastRun ? Math.max(0, Math.floor((Date.now() - lastRun.getTime()) / 60000)) : null;
-  const minutesToNext = nextRun ? Math.floor((nextRun.getTime() - Date.now()) / 60000) : null;
-
-  const lastRunLabel = lastRun ? `${formatClock(lastRun)} (${minutesSince}m ago)` : "n/a";
-  const nextRunLabel =
-    nextRun === null
-      ? "n/a"
-      : minutesToNext !== null && minutesToNext <= 0
-      ? "Due now"
-      : `${formatClock(nextRun)} (in ${minutesToNext}m)`;
+  const lastRunLabel = lastRun ? formatClock(lastRun) : "n/a";
+  const nextRunLabel = nextRun ? formatClock(nextRun) : "n/a";
 
   return (
     <div className="min-h-screen bg-[#060609] text-zinc-100">
