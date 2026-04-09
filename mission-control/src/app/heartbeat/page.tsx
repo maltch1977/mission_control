@@ -39,14 +39,16 @@ export default function HeartbeatPage() {
     void load();
   }, []);
 
-  const timeline = useMemo(
-    () =>
-      rows
-        .filter((r) => !!r.created_at)
-        .map((r) => ({ ...r, ts: new Date(r.created_at as string) }))
-        .sort((a, b) => b.ts.getTime() - a.ts.getTime()),
-    [rows],
-  );
+  const timeline = useMemo(() => {
+    const nowMs = Date.now();
+    return rows
+      .filter((r) => !!r.created_at)
+      .map((r) => ({ ...r, ts: new Date(r.created_at as string) }))
+      .filter((r) => !Number.isNaN(r.ts.getTime()))
+      // guardrail: ignore future timestamps beyond 2 minutes
+      .filter((r) => r.ts.getTime() <= nowMs + 2 * 60 * 1000)
+      .sort((a, b) => b.ts.getTime() - a.ts.getTime());
+  }, [rows]);
 
   const lastRun = timeline[0]?.ts ?? null;
   const nextRun = lastRun ? new Date(lastRun.getTime() + CADENCE_MINUTES * 60000) : null;
