@@ -14,37 +14,34 @@ type HeartbeatEntry = {
   created_at?: string | null;
 };
 
-const cadenceMinutes = 60;
+const CADENCE_MINUTES = 60;
 
-const requiredActions = [
-  "Confirm Supermemory is enabled and configured",
-  "If Supermemory is off, enable it immediately and log the fix",
-  "Review recent mistakes, issues, or friction points",
+const executionPlan = [
+  "Check Supermemory first and auto-fix if it's off",
+  "Review recent mistakes, issues, and friction",
   "Update DASHBOARD.md and CONTROL_TOWER.md when needed",
-  "Review IDEA_INBOX.md and IDEA_BACKLOG.md statuses",
-  "Sync project context and today's memory snapshot",
-  "Report only when something was found or fixed",
+  "Review IDEA_INBOX.md and promote items to backlog",
+  "Sync project context + today's memory snapshot",
+  "Report only when something meaningful changed",
 ];
 
-const supermemoryAutoFix = [
-  "Run: openclaw plugins info openclaw-supermemory",
-  "If not loaded/enabled: openclaw plugins enable openclaw-supermemory",
-  "If not configured: openclaw supermemory setup",
-  "Restart gateway: openclaw gateway restart",
-  "Re-check and log recurrence",
+const supermemoryFixSteps = [
+  "openclaw plugins info openclaw-supermemory",
+  "openclaw plugins enable openclaw-supermemory (if disabled)",
+  "openclaw supermemory setup (if not configured)",
+  "openclaw gateway restart",
+  "re-check status and alert Chad if this keeps repeating",
 ];
 
 const suggestedItems = [
-  "Check Kepter urgent queue for stale P0 items",
-  "Confirm TestFlight feedback is converted to task cards",
-  "Review renewals due in next 7 days",
-  "Flag repeated operational failures as pattern risk",
-  "Propose one new heartbeat item from current workflow friction",
+  "Check Kepter urgent queue for stale P0 tasks",
+  "Convert new TestFlight feedback into task cards",
+  "Review renewals due in the next 7 days",
+  "Flag recurring failures as pattern risks",
 ];
 
 export default function HeartbeatPage() {
   const [rows, setRows] = useState<HeartbeatEntry[]>([]);
-  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -69,7 +66,7 @@ export default function HeartbeatPage() {
     void load();
   }, []);
 
-  const parsed = useMemo(
+  const timeline = useMemo(
     () =>
       rows
         .map((r) => {
@@ -80,22 +77,17 @@ export default function HeartbeatPage() {
     [rows],
   );
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return parsed;
-    return parsed.filter((r) => `${r.title} ${r.summary} ${r.tags.join(" ")}`.toLowerCase().includes(q));
-  }, [parsed, query]);
-
-  const lastRun = parsed[0]?.ts ?? null;
+  const lastRun = timeline[0]?.ts ?? null;
   const now = new Date();
   const minutesSince = lastRun ? Math.floor((now.getTime() - lastRun.getTime()) / 60000) : null;
-  const status = minutesSince === null ? "No data" : minutesSince <= 75 ? "On time" : minutesSince <= 180 ? "Delayed" : "Overdue";
+  const nextRunAt = lastRun ? new Date(lastRun.getTime() + CADENCE_MINUTES * 60000) : null;
+
+  const statusLabel = minutesSince === null ? "No runs yet" : minutesSince <= 75 ? "On schedule" : "Late";
+  const statusTone =
+    statusLabel === "On schedule" ? "text-emerald-300" : statusLabel === "Late" ? "text-amber-300" : "text-zinc-300";
 
   const todayKey = now.toISOString().slice(0, 10);
-  const todayRuns = parsed.filter((r) => r.date_key === todayKey).length;
-  const nextRunAt = lastRun ? new Date(lastRun.getTime() + cadenceMinutes * 60000) : null;
-
-  const statusTone = status === "On time" ? "text-emerald-300" : status === "Delayed" ? "text-amber-300" : "text-rose-300";
+  const todayRuns = timeline.filter((r) => r.date_key === todayKey).length;
 
   return (
     <div className="min-h-screen bg-[#060609] text-zinc-100">
@@ -103,85 +95,72 @@ export default function HeartbeatPage() {
         <Sidebar />
 
         <main className="flex-1 px-5 py-6 md:px-8 md:py-8">
-          <header className="mb-5">
+          <header className="mb-6">
             <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">Heartbeat</p>
-            <h1 className="mt-1 text-4xl font-semibold tracking-tight">Heartbeat Operations</h1>
-            <p className="mt-2 text-sm text-zinc-400">
-              Same design language as Memory. Cadence locked at every {cadenceMinutes} minutes with explicit runbook + live history.
-            </p>
+            <h1 className="mt-1 text-4xl font-semibold tracking-tight">Heartbeat</h1>
+            <p className="mt-2 text-sm text-zinc-400">What runs every 60 minutes, what happened today, and what auto-fixes are applied.</p>
           </header>
 
-          <section className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-            <Stat label="Cadence" value={`Every ${cadenceMinutes}m`} tone="text-violet-300" />
-            <Stat label="Status" value={status} tone={statusTone} />
+          <section className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+            <Stat label="Cadence" value={`Every ${CADENCE_MINUTES}m`} />
+            <Stat label="Status" value={statusLabel} tone={statusTone} />
             <Stat label="Runs Today" value={String(todayRuns)} />
             <Stat label="Last Run" value={lastRun ? lastRun.toLocaleTimeString() : "n/a"} />
-            <Stat label="Next Due" value={nextRunAt ? nextRunAt.toLocaleTimeString() : "n/a"} />
+            <Stat label="Next Run" value={nextRunAt ? nextRunAt.toLocaleTimeString() : "n/a"} />
           </section>
 
-          <section className="mb-4 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search heartbeat entries, actions, or tags..."
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100"
-            />
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[
-                `cadence:${cadenceMinutes}m`,
-                "source:heartbeat",
-                "check:supermemory",
-                status === "On time" ? "state:healthy" : "state:attention",
-              ].map((chip) => (
-                <span key={chip} className="rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-1 text-xs text-zinc-300">
-                  {chip}
-                </span>
-              ))}
-            </div>
+          <p className="mb-5 text-sm text-zinc-500">Heartbeat runs every 60 minutes. "Late" just means it has not checked in recently.</p>
+
+          <section className="grid gap-4 xl:grid-cols-[1.05fr_1fr]">
+            <Card title="What Heartbeat Executes">
+              <div className="space-y-2">
+                {executionPlan.map((item, i) => (
+                  <div key={item} className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200">
+                    {i + 1}. {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card title="Today's Heartbeat Log">
+              <div className="space-y-2">
+                {timeline.length === 0 ? (
+                  <p className="text-sm text-zinc-500">No heartbeat logs yet.</p>
+                ) : (
+                  timeline.slice(0, 18).map((row) => (
+                    <article key={row.id} className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3">
+                      <div className="mb-1 flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-zinc-200">{row.title}</p>
+                        <p className="text-xs text-zinc-500">{row.ts.toLocaleTimeString()}</p>
+                      </div>
+                      <p className="text-xs text-zinc-400">{row.summary}</p>
+                    </article>
+                  ))
+                )}
+              </div>
+            </Card>
           </section>
 
-          <div className="grid gap-4 xl:grid-cols-2">
-            <Panel title="Required Heartbeat Actions">
-              {requiredActions.map((item, idx) => (
-                <Row key={item} title={`${idx + 1}. ${item}`} />
-              ))}
-            </Panel>
+          <section className="mt-4 grid gap-4 xl:grid-cols-2">
+            <Card title="Supermemory Auto-Fix (always first)">
+              <div className="space-y-2">
+                {supermemoryFixSteps.map((item, i) => (
+                  <div key={item} className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200">
+                    {i + 1}. {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
 
-            <Panel title="Supermemory Auto-Fix Runbook">
-              {supermemoryAutoFix.map((item, idx) => (
-                <Row key={item} title={`${idx + 1}. ${item}`} />
-              ))}
-            </Panel>
-          </div>
-
-          <section className="mt-4 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
-            <h2 className="mb-3 text-xs uppercase tracking-[0.18em] text-zinc-500">Suggested Items To Add Over Time</h2>
-            <div className="grid gap-2 md:grid-cols-2">
-              {suggestedItems.map((item) => (
-                <div key={item} className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200">
-                  {item}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-4 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
-            <h2 className="mb-3 text-xs uppercase tracking-[0.18em] text-zinc-500">Recent Heartbeat Runs</h2>
-            <div className="space-y-2">
-              {filtered.length === 0 ? (
-                <p className="text-sm text-zinc-500">No heartbeat entries found.</p>
-              ) : (
-                filtered.slice(0, 24).map((row) => (
-                  <article key={row.id} className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3">
-                    <div className="mb-1 flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-zinc-200">{row.title}</p>
-                      <p className="text-xs text-zinc-500">{row.ts.toLocaleString()}</p>
-                    </div>
-                    <p className="text-xs text-zinc-400">{row.summary}</p>
-                  </article>
-                ))
-              )}
-            </div>
+            <Card title="Suggested Items To Add">
+              <div className="space-y-2">
+                {suggestedItems.map((item) => (
+                  <div key={item} className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
           </section>
         </main>
       </div>
@@ -198,15 +177,11 @@ function Stat({ label, value, tone = "text-zinc-100" }: { label: string; value: 
   );
 }
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
       <h2 className="mb-3 text-xs uppercase tracking-[0.18em] text-zinc-500">{title}</h2>
-      <div className="space-y-2">{children}</div>
+      {children}
     </section>
   );
-}
-
-function Row({ title }: { title: string }) {
-  return <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200">{title}</div>;
 }
