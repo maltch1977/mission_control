@@ -49,10 +49,23 @@ export default function HeartbeatPage() {
 
   const lastRun = timeline[0]?.ts ?? null;
   const nextRun = lastRun ? new Date(lastRun.getTime() + CADENCE_MINUTES * 60000) : null;
-  const minutesSince = lastRun ? Math.floor((Date.now() - lastRun.getTime()) / 60000) : null;
 
-  const status =
-    minutesSince === null ? "No runs yet" : minutesSince <= 75 ? "On schedule" : "Late";
+  const formatClock = (d: Date) =>
+    d.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+  const minutesSince = lastRun ? Math.max(0, Math.floor((Date.now() - lastRun.getTime()) / 60000)) : null;
+  const minutesToNext = nextRun ? Math.floor((nextRun.getTime() - Date.now()) / 60000) : null;
+
+  const lastRunLabel = lastRun ? `${formatClock(lastRun)} (${minutesSince}m ago)` : "n/a";
+  const nextRunLabel =
+    nextRun === null
+      ? "n/a"
+      : minutesToNext !== null && minutesToNext <= 0
+      ? "Due now"
+      : `${formatClock(nextRun)} (in ${minutesToNext}m)`;
 
   return (
     <div className="min-h-screen bg-[#060609] text-zinc-100">
@@ -66,11 +79,10 @@ export default function HeartbeatPage() {
             <p className="mt-2 text-sm text-zinc-400">Simple view of what heartbeat is doing.</p>
           </header>
 
-          <section className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <section className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
             <Stat label="Cadence" value="Every 60m" />
-            <Stat label="Status" value={status} />
-            <Stat label="Last Run" value={lastRun ? lastRun.toLocaleTimeString() : "n/a"} />
-            <Stat label="Next Run" value={nextRun ? nextRun.toLocaleTimeString() : "n/a"} />
+            <Stat label="Last Run" value={lastRunLabel} />
+            <Stat label="Next Run" value={nextRunLabel} />
           </section>
 
           <section className="mb-4 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4">
