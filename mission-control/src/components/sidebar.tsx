@@ -7,13 +7,16 @@ const navItems = [
   { label: "Tasks", href: "/" },
   { label: "Calendar", href: "/calendar" },
   { label: "Projects", href: "/projects" },
+  { label: "Kepter", href: "/kepter" },
   { label: "Memory", href: "/memory" },
   { label: "Subscriptions", href: "/subscriptions" },
   { label: "Full Log", href: "/log" },
   { label: "Team", href: "/team" },
   { label: "Agents", href: "#" },
   { label: "Approvals", href: "#" },
-  { label: "Docs", href: "#" },
+  { label: "Docs", href: "/docs" },
+  { label: "Help", href: "/help" },
+  { label: "Heartbeat", href: "/heartbeat" },
   { label: "Office", href: "#" },
 ];
 
