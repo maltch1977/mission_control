@@ -228,9 +228,9 @@ export default function TeamPage() {
         <Sidebar />
         <main className="flex-1 px-5 py-6 md:px-8 md:py-8">
           <header className="mb-6 border-b border-zinc-800 pb-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">Team</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-400">Team</p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-zinc-100">Org Operations</h1>
-            <p className="mt-1 text-sm text-zinc-400">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
+            <p className="mt-1 text-sm text-zinc-300">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
           </header>
 
 
@@ -239,7 +239,7 @@ export default function TeamPage() {
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-semibold tracking-tight">Chief of Staff</p>
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{modelLabel(chief.model)}</p>
+                  <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-300">{modelLabel(chief.model)}</p>
                 </div>
                 <span className="rounded-full px-2.5 py-1 text-xs text-violet-200 bg-violet-500/20 border border-violet-400/30">Core</span>
               </div>
@@ -250,13 +250,13 @@ export default function TeamPage() {
                     <div className="text-2xl">🐼</div>
                     <div>
                       <p className="text-lg font-semibold">{chief.name}</p>
-                      <p className="text-xs text-zinc-400">{chief.role}</p>
+                      <p className="text-xs text-zinc-300">{chief.role}</p>
                     </div>
                   </div>
                   <span className={`rounded-full px-2 py-1 text-xs ${statusPill(chief.status)}`}>{chief.status}</span>
                 </div>
-                <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(chief.model)}</span></p>
-                <p className="mt-1 text-xs text-zinc-500">{chief.last_active}</p>
+                <p className="mt-2 text-xs text-zinc-300">Backup model: <span className="text-zinc-200">{backupModel(chief.model)}</span></p>
+                <p className="mt-1 text-xs text-zinc-400">{chief.last_active}</p>
               </div>
             </article>
           </section>
@@ -291,7 +291,7 @@ export default function TeamPage() {
                   <div className="mb-4 flex items-center justify-between">
                     <div>
                       <p className="text-2xl font-semibold tracking-tight">{cfg.title}</p>
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">{modelLabel(lead?.model || cfg.modelDefault)}</p>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-300">{modelLabel(lead?.model || cfg.modelDefault)}</p>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-xs ${cfg.badge}`}>{activeCount} active</span>
                   </div>
@@ -300,15 +300,15 @@ export default function TeamPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-lg font-semibold">{lead?.name || cfg.leadName}</p>
-                        <p className="text-xs text-zinc-400">{lead?.role || cfg.fallbackRole}</p>
+                        <p className="text-xs text-zinc-300">{lead?.role || cfg.fallbackRole}</p>
                       </div>
                       <span className={`rounded-full px-2 py-1 text-xs ${statusPill(leadStatus)}`}>{leadStatus}</span>
                     </div>
-                    <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(lead?.model || cfg.modelDefault)}</span></p>
-                    <p className="mt-1 text-xs text-zinc-500">{lead?.last_active || "today"} · {activeCount} tasks</p>
+                    <p className="mt-2 text-xs text-zinc-300">Backup model: <span className="text-zinc-200">{backupModel(lead?.model || cfg.modelDefault)}</span></p>
+                    <p className="mt-1 text-xs text-zinc-400">{lead?.last_active || "today"} · {activeCount} tasks</p>
                   </div>
 
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">Capabilities</p>
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">Capabilities</p>
                   <div className="space-y-1.5">
                     {cfg.capabilities.map((cap) => (
                       <p key={cap} className="text-sm text-zinc-200/90">
