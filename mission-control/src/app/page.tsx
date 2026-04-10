@@ -627,7 +627,7 @@ export default function Home() {
         <main className="flex-1 p-4 md:p-6">
           <header className="mb-4 flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Tasks</p>
+              <p className="text-xs uppercase tracking-[0.15em] text-zinc-300">Tasks</p>
               <h1 className="text-2xl font-semibold text-zinc-50">Task Board {loading ? "· syncing" : ""}</h1>
             </div>
           </header>
@@ -642,7 +642,7 @@ export default function Home() {
           <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-semibold">Command Center</h2>
-              <span className="text-xs text-zinc-500">Aggregate snapshot</span>
+              <span className="text-xs text-zinc-300">Aggregate snapshot</span>
             </div>
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="space-y-3">
@@ -700,35 +700,35 @@ export default function Home() {
           </section>
 
           <section className="mb-2 flex items-center gap-2 text-sm">
-            <span className="text-zinc-400">Owner:</span>
+            <span className="text-zinc-300">Owner:</span>
             {(["all", "Chad", "Panda"] as OwnerFilter[]).map((owner) => (
-              <button key={owner} type="button" onClick={() => setOwnerFilter(owner)} className={`rounded-md px-3 py-1 ${ownerFilter === owner ? "bg-zinc-700 text-zinc-100" : "bg-zinc-900 text-zinc-400"}`}>{owner}</button>
+              <button key={owner} type="button" onClick={() => setOwnerFilter(owner)} className={`rounded-md px-3 py-1 ${ownerFilter === owner ? "bg-zinc-700 text-zinc-100" : "bg-zinc-900 text-zinc-300"}`}>{owner}</button>
             ))}
           </section>
 
-          <p className="mb-2 text-xs text-zinc-500">Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> so Panda can prioritize them during heartbeat sweeps.</p>
-          <p className="mb-4 text-xs text-zinc-500">Auto-delegation matrix is active across Security, Research, Social, Outreach, Finance, and Engineering based on role + trigger keywords/tags.</p>
+          <p className="mb-2 text-xs text-zinc-300">Auto-pickup convention: tag tasks with <span className="rounded bg-zinc-800 px-1 py-[1px] text-zinc-300">auto</span> so Panda can prioritize them during heartbeat sweeps.</p>
+          <p className="mb-4 text-xs text-zinc-300">Auto-delegation matrix is active across Security, Research, Social, Outreach, Finance, and Engineering based on role + trigger keywords/tags.</p>
 
           <div className="space-y-4">
             <section className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
                 {statusOrder.map((status) => (
                   <div key={status} className="rounded-lg bg-zinc-950/40 p-2" onDragOver={(e) => e.preventDefault()} onDrop={() => draggedTaskId && moveTaskToStatus(draggedTaskId, status)}>
-                    <div className="mb-2 px-2 py-1"><p className="text-xs font-medium uppercase tracking-wide text-zinc-400">{statusLabels[status]} {getTasksByStatus(status).length}</p></div>
+                    <div className="mb-2 px-2 py-1"><p className="text-xs font-medium uppercase tracking-wide text-zinc-300">{statusLabels[status]} {getTasksByStatus(status).length}</p></div>
                     <div className="space-y-2">
                       {getTasksByStatus(status).length === 0 ? (
-                        <div className="rounded-md border border-dashed border-zinc-800 p-5 text-center text-xs text-zinc-500">Drop task here</div>
+                        <div className="rounded-md border border-dashed border-zinc-800 p-5 text-center text-xs text-zinc-300">Drop task here</div>
                       ) : (
                         getTasksByStatus(status).map((task) => (
                           <article key={task.id} draggable onDragStart={() => setDraggedTaskId(task.id)} onDragEnd={() => setDraggedTaskId(null)} className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-3">
                             <div className="mb-2 flex items-start gap-2"><span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${priorityDot[task.priority]}`} /><h3 className="line-clamp-2 text-sm font-medium text-zinc-100">{task.title}</h3></div>
-                            <p className="mb-2 line-clamp-2 text-xs text-zinc-400">{task.description}</p>
+                            <p className="mb-2 line-clamp-2 text-xs text-zinc-300">{task.description}</p>
                             <div className="mb-2 flex flex-wrap gap-1">{task.tags.map((tag) => <span key={tag} className={`rounded-full px-2 py-[2px] text-[10px] ${tag.toLowerCase() === "auto" ? "bg-violet-900/70 text-violet-200" : "bg-zinc-800 text-zinc-300"}`}>{tag}</span>)}</div>
-                            <div className="flex items-center justify-between text-xs"><span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{task.project}</span><span className="text-zinc-500">{task.dueDate ? `Due ${task.dueDate}` : task.updated}</span></div>
-                            <p className="mt-1 text-[11px] text-zinc-500">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}{task.parentTaskId ? ` · child of ${task.parentTaskId.slice(0, 6)}` : ""}</p>
+                            <div className="flex items-center justify-between text-xs"><span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{task.project}</span><span className="text-zinc-300">{task.dueDate ? `Due ${task.dueDate}` : task.updated}</span></div>
+                            <p className="mt-1 text-[11px] text-zinc-300">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}{task.parentTaskId ? ` · child of ${task.parentTaskId.slice(0, 6)}` : ""}</p>
                             <div className="mt-3 flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-semibold text-zinc-100">{initials(task.owner)}</span><span className="text-xs text-zinc-400">{task.owner}</span></div>
-                              <div className="text-[11px] text-zinc-500">Managed by Panda</div>
+                              <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-semibold text-zinc-100">{initials(task.owner)}</span><span className="text-xs text-zinc-300">{task.owner}</span></div>
+                              <div className="text-[11px] text-zinc-300">Managed by Panda</div>
                             </div>
                           </article>
                         ))
@@ -740,8 +740,8 @@ export default function Home() {
             </section>
 
             <aside className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-              <div className="mb-3 flex items-center justify-between"><h2 className="text-sm font-semibold">Live Activity</h2><span className="text-xs text-zinc-500">Real-time</span></div>
-              <div className="space-y-2">{activity.map((entry) => <div key={entry.id} className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3"><div className="mb-1 flex items-center justify-between"><p className="text-sm font-medium text-zinc-200">{entry.agent}</p><span className="text-xs text-zinc-500">{entry.time}</span></div><p className="text-xs leading-5 text-zinc-400">{entry.text}</p></div>)}</div>
+              <div className="mb-3 flex items-center justify-between"><h2 className="text-sm font-semibold">Live Activity</h2><span className="text-xs text-zinc-300">Real-time</span></div>
+              <div className="space-y-2">{activity.map((entry) => <div key={entry.id} className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3"><div className="mb-1 flex items-center justify-between"><p className="text-sm font-medium text-zinc-200">{entry.agent}</p><span className="text-xs text-zinc-300">{entry.time}</span></div><p className="text-xs leading-5 text-zinc-300">{entry.text}</p></div>)}</div>
             </aside>
           </div>
         </main>
@@ -757,7 +757,7 @@ function initials(name: Owner) {
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
-      <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">{title}</p>
+      <p className="mb-2 text-xs uppercase tracking-wide text-zinc-300">{title}</p>
       <div className="space-y-2">{children}</div>
     </div>
   );
@@ -767,19 +767,19 @@ function MiniRow({ title, meta }: { title: string; meta: string }) {
   return (
     <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2">
       <p className="text-sm text-zinc-200 line-clamp-1">{title}</p>
-      <p className="text-[11px] text-zinc-500">{meta}</p>
+      <p className="text-[11px] text-zinc-300">{meta}</p>
     </div>
   );
 }
 
 function EmptyText({ text }: { text: string }) {
-  return <p className="text-xs text-zinc-500">{text}</p>;
+  return <p className="text-xs text-zinc-300">{text}</p>;
 }
 
 function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
   return (
     <div className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
-      <p className="text-xs uppercase tracking-wide text-zinc-500">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-zinc-300">{label}</p>
       <p className={`mt-1 text-2xl font-semibold ${accent}`}>{value}</p>
     </div>
   );
