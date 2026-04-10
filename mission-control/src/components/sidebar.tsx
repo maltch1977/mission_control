@@ -26,8 +26,7 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-zinc-800/80 bg-[#070709] p-4 lg:block">
-      <div className="mb-4 flex items-center gap-2 px-1">
-        <div className="h-6 w-6 rounded bg-zinc-200" />
+      <div className="mb-4 flex items-center px-1">
         <p className="text-sm font-medium tracking-tight text-zinc-100">Mission Control</p>
       </div>
 
