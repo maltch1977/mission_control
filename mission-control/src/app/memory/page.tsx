@@ -227,13 +227,7 @@ export default function MemoryPage() {
           </header>
 
           <section className="mb-5 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4">
-            <form className="grid gap-2 md:grid-cols-8" onSubmit={addEntry}>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Entry title" />
-              <input value={summary} onChange={(e) => setSummary(e.target.value)} className="md:col-span-3 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Summary" />
-              <input value={tagsRaw} onChange={(e) => setTagsRaw(e.target.value)} className="md:col-span-3 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="project:hms, type:decision, owner:chad" />
-              <textarea value={content} onChange={(e) => setContent(e.target.value)} className="md:col-span-8 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" rows={3} placeholder="Write journal content" />
-              <button className="w-fit rounded bg-violet-600 px-3 py-2 text-sm" type="submit">+ Add Journal Entry</button>
-            </form>
+            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda what to remember and it will be written to memory for you.</p>
           </section>
 
           <div className="grid gap-5 xl:grid-cols-[380px_1fr]">
@@ -265,7 +259,7 @@ export default function MemoryPage() {
               <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3.5">
                 <input value={longTerm.title} onChange={(e) => setLongTerm((p) => ({ ...p, title: e.target.value }))} className="w-full rounded bg-zinc-800 px-2 py-1 text-sm font-semibold" />
                 <textarea value={longTerm.summary} onChange={(e) => setLongTerm((p) => ({ ...p, summary: e.target.value }))} className="mt-2 w-full rounded bg-zinc-800 px-2 py-1 text-xs" rows={3} />
-                <button onClick={saveLongTerm} className="mt-2 rounded bg-zinc-700 px-2 py-1 text-xs">Save Long-Term</button>
+                <p className="mt-2 text-[11px] text-zinc-500">Long-term memory is assistant-managed.</p>
               </div>
 
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Daily Journal</p>

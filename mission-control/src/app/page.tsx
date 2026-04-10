@@ -58,6 +58,33 @@ type DbActivity = {
   time_label: string | null;
 };
 
+type MemoryPulse = {
+  id: string;
+  title: string;
+  summary: string;
+  date_key: string;
+  tags: string[] | null;
+  importance: "high" | "med" | "low";
+  created_at?: string | null;
+};
+
+type Renewal = {
+  id: string;
+  name: string;
+  amount: number;
+  renewal_date: string | null;
+  status: "active" | "canceling" | "canceled" | "trial";
+  account: "Brex" | "SoFi" | "Mercury";
+};
+
+type WorkLogRow = {
+  id: string;
+  actor: string;
+  action: string;
+  project: string | null;
+  created_at: string;
+};
+
 const seedTasks: Task[] = [
   {
     id: "t2",
@@ -269,6 +296,9 @@ export default function Home() {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [taskDraft, setTaskDraft] = useState<TaskDraft>(emptyDraft);
   const [loading, setLoading] = useState(true);
+  const [memoryPulse, setMemoryPulse] = useState<MemoryPulse[]>([]);
+  const [renewals, setRenewals] = useState<Renewal[]>([]);
+  const [workLog, setWorkLog] = useState<WorkLogRow[]>([]);
 
   useEffect(() => {
     const boot = async () => {
@@ -286,9 +316,12 @@ export default function Home() {
         return;
       }
 
-      const [{ data: taskRows }, { data: activityRows }] = await Promise.all([
+      const [{ data: taskRows }, { data: activityRows }, { data: memoryRows }, { data: renewalRows }, { data: workLogRows }] = await Promise.all([
         supabase.from("tasks").select("*").order("created_at", { ascending: false }),
         supabase.from("activity").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("memory_entries").select("id,title,summary,date_key,tags,importance,created_at").order("created_at", { ascending: false }).limit(20),
+        supabase.from("subscriptions").select("id,name,amount,renewal_date,status,account").order("renewal_date", { ascending: true }).limit(20),
+        supabase.from("work_log").select("id,actor,action,project,created_at").order("created_at", { ascending: false }).limit(20),
       ]);
 
       if (taskRows) setTasks((taskRows as DbTask[]).map(fromDbTask));
@@ -296,6 +329,9 @@ export default function Home() {
         setActivity(
           (activityRows as DbActivity[]).map((r) => ({ id: r.id, agent: r.agent, text: r.text, time: r.time_label || "now" })),
         );
+      if (memoryRows) setMemoryPulse(memoryRows as MemoryPulse[]);
+      if (renewalRows) setRenewals(renewalRows as Renewal[]);
+      if (workLogRows) setWorkLog(workLogRows as WorkLogRow[]);
       setLoading(false);
     };
 
@@ -320,6 +356,36 @@ export default function Home() {
   const inProgress = filteredTasks.filter((task) => task.status === "in-progress").length;
   const completed = filteredTasks.filter((task) => task.status === "done").length;
   const completion = filteredTasks.length ? Math.round((completed / filteredTasks.length) * 100) : 0;
+
+  const blockers = useMemo(
+    () => tasks.filter((t) => t.status !== "done" && (t.tags.some((tag) => tag.toLowerCase().includes("blocker")) || t.priority === "high")),
+    [tasks],
+  );
+
+  const dueSoon = useMemo(() => {
+    const now = new Date();
+    const soon = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+    return tasks.filter((t) => {
+      if (!t.dueDate || t.status === "done") return false;
+      const due = new Date(`${t.dueDate}T00:00:00`);
+      return due <= soon;
+    });
+  }, [tasks]);
+
+  const topPriorities = useMemo(
+    () => tasks.filter((t) => t.status !== "done").sort((a, b) => (a.priority === b.priority ? 0 : a.priority === "high" ? -1 : b.priority === "high" ? 1 : a.priority === "med" ? -1 : 1)).slice(0, 3),
+    [tasks],
+  );
+
+  const recentDecisions = useMemo(
+    () => memoryPulse.filter((m) => (m.tags || []).some((tag) => tag.toLowerCase().includes("type:decision"))).slice(0, 3),
+    [memoryPulse],
+  );
+
+  const nextRenewals = useMemo(
+    () => renewals.filter((r) => !!r.renewal_date && r.status !== "canceled").slice(0, 3),
+    [renewals],
+  );
 
   const getTasksByStatus = (status: TaskStatus) => filteredTasks.filter((task) => task.status === status);
 
@@ -573,38 +639,68 @@ export default function Home() {
             <StatCard label="Completion" value={`${completion}%`} accent="text-fuchsia-400" />
           </section>
 
-          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <form className="grid gap-2 md:grid-cols-10" onSubmit={submitTask}>
-              <input value={taskDraft.title} onChange={(e) => setTaskDraft((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="md:col-span-3 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={taskDraft.project} onChange={(e) => setTaskDraft((p) => ({ ...p, project: e.target.value }))} placeholder="Project" className="md:col-span-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <select value={taskDraft.owner} onChange={(e) => setTaskDraft((p) => ({ ...p, owner: e.target.value as Owner }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option>Panda</option><option>Chad</option></select>
-              <input value={taskDraft.ownerAgent} onChange={(e) => setTaskDraft((p) => ({ ...p, ownerAgent: e.target.value }))} placeholder="Owner agent" className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
-              <select value={taskDraft.modelTier} onChange={(e) => setTaskDraft((p) => ({ ...p, modelTier: e.target.value as ModelTier }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="cheap">cheap</option><option value="standard">standard</option><option value="premium">premium</option></select>
-              <input
-                value={taskDraft.role}
-                onChange={(e) => {
-                  const role = e.target.value;
-                  const key = role.trim().toLowerCase();
-                  const routing = roleRoutingDefaults[key];
-                  setTaskDraft((p) => ({
-                    ...p,
-                    role,
-                    ownerAgent: routing ? routing.ownerAgent : p.ownerAgent,
-                    modelTier: routing ? routing.modelTier : p.modelTier,
-                  }));
-                }}
-                placeholder="Role"
-                className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"
-              />
-              <select value={taskDraft.priority} onChange={(e) => setTaskDraft((p) => ({ ...p, priority: e.target.value as Priority }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
-              <input type="date" value={taskDraft.dueDate} onChange={(e) => setTaskDraft((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-2 text-sm" />
-              <input value={taskDraft.tags} onChange={(e) => setTaskDraft((p) => ({ ...p, tags: e.target.value }))} placeholder="tags: auto, launch" className="md:col-span-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <textarea value={taskDraft.description} onChange={(e) => setTaskDraft((p) => ({ ...p, description: e.target.value }))} placeholder="Description" className="md:col-span-8 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" rows={2} />
-              <div className="md:col-span-2 flex items-start gap-2">
-                <button className="rounded-lg bg-violet-600 px-3 py-2 font-medium text-white hover:bg-violet-500" type="submit">{editingTaskId ? "Save Task" : "+ New Task"}</button>
-                {editingTaskId && <button type="button" onClick={resetDraft} className="rounded-lg border border-zinc-700 px-3 py-2 text-zinc-300">Cancel</button>}
+          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-sm font-semibold">Command Center</h2>
+              <span className="text-xs text-zinc-500">Aggregate snapshot</span>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className="space-y-3">
+                <Panel title="Top Priorities">
+                  {topPriorities.length === 0 ? (
+                    <EmptyText text="No active priorities." />
+                  ) : (
+                    topPriorities.map((t) => <MiniRow key={t.id} title={t.title} meta={`${t.project} · ${t.priority} · ${t.status}`} />)
+                  )}
+                </Panel>
+
+                <Panel title="Blockers">
+                  {blockers.length === 0 ? (
+                    <EmptyText text="No blockers tagged right now." />
+                  ) : (
+                    blockers.slice(0, 4).map((t) => <MiniRow key={t.id} title={t.title} meta={`${t.project} · ${t.ownerAgent}`} />)
+                  )}
+                </Panel>
+
+                <Panel title="Due Soon / Overdue">
+                  {dueSoon.length === 0 ? (
+                    <EmptyText text="No due-soon items in next 3 days." />
+                  ) : (
+                    dueSoon.slice(0, 4).map((t) => <MiniRow key={t.id} title={t.title} meta={`Due ${t.dueDate || "n/a"} · ${t.project}`} />)
+                  )}
+                </Panel>
               </div>
-            </form>
+
+              <div className="space-y-3">
+                <Panel title="Recent Decisions">
+                  {recentDecisions.length === 0 ? (
+                    <EmptyText text="No recent decision memories yet." />
+                  ) : (
+                    recentDecisions.map((m) => <MiniRow key={m.id} title={m.title} meta={`${m.date_key} · ${m.importance}`} />)
+                  )}
+                </Panel>
+
+                <Panel title="Upcoming Renewals (30d)">
+                  {nextRenewals.length === 0 ? (
+                    <EmptyText text="No upcoming renewals found." />
+                  ) : (
+                    nextRenewals.map((r) => <MiniRow key={r.id} title={r.name} meta={`${r.renewal_date || "n/a"} · $${Number(r.amount).toFixed(2)} · ${r.account}`} />)
+                  )}
+                </Panel>
+
+                <Panel title="Recent Execution Activity">
+                  {workLog.length === 0 ? (
+                    <EmptyText text="No work log entries yet." />
+                  ) : (
+                    workLog.slice(0, 4).map((w) => <MiniRow key={w.id} title={w.action} meta={`${w.actor} · ${w.project || "General"}`} />)
+                  )}
+                </Panel>
+              </div>
+            </div>
+          </section>
+
+          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
+            <p className="text-sm text-zinc-300">Manual task entry is disabled. Tell Panda what to add/update and Mission Control will be synced for you.</p>
           </section>
 
           <section className="mb-2 flex items-center gap-2 text-sm">
@@ -636,13 +732,7 @@ export default function Home() {
                             <p className="mt-1 text-[11px] text-zinc-500">{task.ownerAgent} · {task.modelTier} · {task.role || "ops"}{task.parentTaskId ? ` · child of ${task.parentTaskId.slice(0, 6)}` : ""}</p>
                             <div className="mt-3 flex items-center justify-between gap-2">
                               <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-semibold text-zinc-100">{initials(task.owner)}</span><span className="text-xs text-zinc-400">{task.owner}</span></div>
-                              <div className="flex items-center gap-1">
-                                <button type="button" onClick={() => moveTask(task.id, "back")} disabled={!prevStatus[task.status]} className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300 disabled:opacity-30">←</button>
-                                <button type="button" onClick={() => moveTask(task.id, "forward")} disabled={!nextStatus[task.status]} className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300 disabled:opacity-30">→</button>
-                                <button type="button" onClick={() => assignToPanda(task.id)} disabled={task.owner === "Panda"} className="rounded bg-zinc-800 px-2 py-1 text-xs text-violet-300 disabled:opacity-40">Panda</button>
-                                <button type="button" onClick={() => openForEdit(task)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300">Edit</button>
-                                <button type="button" onClick={() => deleteTask(task.id)} className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300">Del</button>
-                              </div>
+                              <div className="text-[11px] text-zinc-500">Managed by Panda</div>
                             </div>
                           </article>
                         ))
@@ -666,6 +756,28 @@ export default function Home() {
 
 function initials(name: Owner) {
   return name === "Chad" ? "C" : "P";
+}
+
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+      <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">{title}</p>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function MiniRow({ title, meta }: { title: string; meta: string }) {
+  return (
+    <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2">
+      <p className="text-sm text-zinc-200 line-clamp-1">{title}</p>
+      <p className="text-[11px] text-zinc-500">{meta}</p>
+    </div>
+  );
+}
+
+function EmptyText({ text }: { text: string }) {
+  return <p className="text-xs text-zinc-500">{text}</p>;
 }
 
 function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {

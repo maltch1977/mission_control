@@ -160,17 +160,7 @@ export default function ProjectsPage() {
           </header>
 
           <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <form className="grid gap-2 md:grid-cols-6" onSubmit={submitProject}>
-              <input className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Project name" value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} />
-              <input className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" placeholder="Description" value={draft.description} onChange={(e) => setDraft((p) => ({ ...p, description: e.target.value }))} />
-              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as ProjectMeta["status"] }))}><option>Planning</option><option>Active</option><option>Paused</option></select>
-              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.owner} onChange={(e) => setDraft((p) => ({ ...p, owner: e.target.value }))}><option>Panda</option><option>Chad</option></select>
-              <select className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" value={draft.priority} onChange={(e) => setDraft((p) => ({ ...p, priority: e.target.value as ProjectMeta["priority"] }))}><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select>
-              <div className="md:col-span-6 flex gap-2">
-                <button className="rounded bg-violet-600 px-3 py-2 text-sm font-medium" type="submit">{editingId ? "Save Project" : "+ Add Project"}</button>
-                {editingId && <button className="rounded border border-zinc-700 px-3 py-2 text-sm" type="button" onClick={reset}>Cancel</button>}
-              </div>
-            </form>
+            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda what project to add/update and it will be synced here.</p>
           </section>
 
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -215,28 +205,7 @@ export default function ProjectsPage() {
                   {project.linked.length === 0 && <p className="text-xs text-zinc-500">No linked tasks yet</p>}
                 </div>
 
-                <div className="mt-3 flex gap-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      beginEdit(project);
-                    }}
-                    className="rounded bg-zinc-800 px-2 py-1 text-xs"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeProject(project.id);
-                    }}
-                    className="rounded bg-zinc-800 px-2 py-1 text-xs text-rose-300"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <div className="mt-3 text-[11px] text-zinc-500">Managed by Panda</div>
               </article>
             ))}
           </section>

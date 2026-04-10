@@ -150,15 +150,7 @@ export default function SubscriptionsPage() {
           </section>
 
           <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <form className="grid gap-2 md:grid-cols-8" onSubmit={addSubscription}>
-              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Service name" className="md:col-span-2 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <input value={draft.amount} onChange={(e) => setDraft((p) => ({ ...p, amount: e.target.value }))} placeholder="Amount" className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <select value={draft.account} onChange={(e) => setDraft((p) => ({ ...p, account: e.target.value as Account }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"><option>Brex</option><option>SoFi</option><option>Mercury</option></select>
-              <select value={draft.billing_cycle} onChange={(e) => setDraft((p) => ({ ...p, billing_cycle: e.target.value as BillingCycle }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"><option value="unknown">unknown</option><option value="monthly">monthly</option><option value="yearly">yearly</option><option value="weekly">weekly</option></select>
-              <input type="date" value={draft.renewal_date} onChange={(e) => setDraft((p) => ({ ...p, renewal_date: e.target.value }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm" />
-              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as Status }))} className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"><option value="active">active</option><option value="trial">trial</option><option value="canceling">canceling</option><option value="canceled">canceled</option></select>
-              <button className="rounded bg-violet-600 px-3 py-2 text-sm font-medium" type="submit">+ Add</button>
-            </form>
+            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda any new subscription and it will be added for you.</p>
           </section>
 
           <div className="grid gap-4 xl:grid-cols-[1fr_350px]">
