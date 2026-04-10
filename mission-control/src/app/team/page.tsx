@@ -236,23 +236,13 @@ export default function TeamPage() {
           </header>
 
           <section className="mb-6 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
-            <form className="grid gap-2 md:grid-cols-7" onSubmit={addAgent}>
-              <input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} placeholder="Agent name" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
-              <input value={draft.role} onChange={(e) => { const role = e.target.value; setDraft((p) => ({ ...p, role, model: roleModelDefaults[role] || p.model })); }} placeholder="Role" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
-              <input value={draft.model} onChange={(e) => setDraft((p) => ({ ...p, model: e.target.value }))} placeholder="Model" className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
-              <select value={draft.status} onChange={(e) => setDraft((p) => ({ ...p, status: e.target.value as AgentStatus }))} className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm">
-                <option value="idle">idle</option><option value="working">working</option><option value="review">review</option><option value="blocked">blocked</option>
-              </select>
-              <input value={draft.mission} onChange={(e) => setDraft((p) => ({ ...p, mission: e.target.value }))} placeholder="Mission" className="md:col-span-2 rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm" />
-              <button type="submit" className="rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-medium transition hover:bg-violet-500">+ Add Agent</button>
-            </form>
+            <p className="text-sm text-zinc-300">Manual entry is disabled. Tell Panda what to add/update and Mission Control will be updated for you.</p>
           </section>
 
 
           <section className="mb-6 flex justify-center">
             <article
-              onClick={() => beginEdit(chief)}
-              className="w-full max-w-[420px] cursor-pointer rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition hover:border-zinc-700"
+              className="w-full max-w-[420px] rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
             >
               <div className="mb-4 flex items-center justify-between">
                 <div>
@@ -324,11 +314,6 @@ export default function TeamPage() {
                     </div>
                     <p className="mt-2 text-xs text-zinc-400">Backup model: <span className="text-zinc-200">{backupModel(lead?.model || cfg.modelDefault)}</span></p>
                     <p className="mt-1 text-xs text-zinc-500">{lead?.last_active || "today"} · {activeCount} tasks</p>
-                    {lead && (
-                      <div className="mt-3 flex gap-2">
-                        <button type="button" onClick={() => beginEdit(lead)} className="rounded-lg bg-zinc-800 px-2.5 py-1 text-xs hover:bg-zinc-700">Edit</button>
-                      </div>
-                    )}
                   </div>
 
                   <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">Capabilities</p>
