@@ -220,31 +220,6 @@ export default function TeamPage() {
   };
 
 
-  const routingEvents = useMemo(() => {
-    return tasks
-      .filter((t) => !!t.parent_task_id)
-      .slice(0, 12)
-      .map((t) => ({
-        id: t.id,
-        to: t.owner,
-        label: t.title || "Delegated task",
-        time: t.updated || "recently",
-      }));
-  }, [tasks]);
-
-  const routeActive = useMemo(() => {
-    const keys = new Set<string>();
-    for (const e of routingEvents) {
-      const to = e.to.toLowerCase();
-      if (to.includes("forge") || to.includes("engineering")) keys.add("eng");
-      if (to.includes("atlas") || to.includes("research")) keys.add("research");
-      if (to.includes("mr x") || to.includes("social")) keys.add("social");
-      if (to.includes("ledger") || to.includes("finance")) keys.add("finance");
-      if (to.includes("sentinel") || to.includes("security")) keys.add("security");
-    }
-    return keys;
-  }, [routingEvents]);
-
   const chief = useMemo(() => agents.find((a) => a.name.toLowerCase() === "panda") || seeds[0], [agents]);
 
   return (
@@ -273,76 +248,6 @@ export default function TeamPage() {
             </form>
           </section>
 
-          <section className="mb-6 rounded-2xl border border-zinc-800 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-sm font-semibold">Routing Visualizer</p>
-              <span className="text-xs text-zinc-500">Live delegation map</span>
-            </div>
-            <div className="grid gap-3 md:grid-cols-[1.4fr_1fr]">
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3">
-                <svg viewBox="0 0 760 220" className="h-[220px] w-full">
-                  <defs>
-                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-                      <path d="M0,0 L8,4 L0,8 z" fill="#a78bfa" />
-                    </marker>
-                  </defs>
-                  <rect x="20" y="80" width="140" height="60" rx="12" fill="#1f183a" stroke="#6d28d9" />
-                  <text x="90" y="115" fill="#e9d5ff" textAnchor="middle" fontSize="12">Panda</text>
-
-                  <rect x="230" y="20" width="140" height="52" rx="12" fill="#132332" stroke="#0ea5e9" />
-                  <text x="300" y="50" fill="#bae6fd" textAnchor="middle" fontSize="11">Engineering</text>
-
-                  <rect x="230" y="86" width="140" height="52" rx="12" fill="#2a1538" stroke="#c084fc" />
-                  <text x="300" y="116" fill="#f5d0fe" textAnchor="middle" fontSize="11">Research</text>
-
-                  <rect x="230" y="152" width="140" height="52" rx="12" fill="#3a1a24" stroke="#f472b6" />
-                  <text x="300" y="182" fill="#fbcfe8" textAnchor="middle" fontSize="11">Social</text>
-
-                  <line x1="160" y1="96" x2="230" y2="46" stroke={routeActive.has("eng") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    {routeActive.has("eng") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-                  <line x1="160" y1="110" x2="230" y2="112" stroke={routeActive.has("research") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    {routeActive.has("research") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-                  <line x1="160" y1="124" x2="230" y2="178" stroke={routeActive.has("social") ? "#a78bfa" : "#52525b"} strokeWidth="2" strokeDasharray="6 5" markerEnd="url(#arrow)">
-                    {routeActive.has("social") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-
-                  <rect x="430" y="40" width="130" height="52" rx="12" fill="#1e3022" stroke="#34d399" />
-                  <text x="495" y="70" fill="#bbf7d0" textAnchor="middle" fontSize="11">Finance</text>
-                  <rect x="430" y="120" width="130" height="52" rx="12" fill="#3a280e" stroke="#f59e0b" />
-                  <text x="495" y="150" fill="#fde68a" textAnchor="middle" fontSize="11">Security</text>
-
-                  <line x1="370" y1="46" x2="430" y2="66" stroke={routeActive.has("finance") ? "#60a5fa" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
-                    {routeActive.has("finance") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-                  <line x1="370" y1="112" x2="430" y2="146" stroke={routeActive.has("security") ? "#c084fc" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
-                    {routeActive.has("security") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-                  <line x1="370" y1="178" x2="430" y2="146" stroke={routeActive.has("security") ? "#f472b6" : "#52525b"} strokeWidth="1.8" strokeDasharray="5 5" markerEnd="url(#arrow)">
-                    {routeActive.has("security") && <animate attributeName="stroke-dashoffset" values="0;-22" dur="1.2s" repeatCount="indefinite" />}
-                  </line>
-                </svg>
-              </div>
-
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Recent Routing Events</p>
-                <div className="space-y-2">
-                  {routingEvents.length === 0 ? (
-                    <p className="text-xs text-zinc-500">No delegation events yet. Create a routed task to animate the flow.</p>
-                  ) : (
-                    routingEvents.map((e) => (
-                      <div key={e.id} className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-2.5">
-                        <p className="text-xs text-zinc-200">→ {e.to}</p>
-                        <p className="mt-0.5 line-clamp-2 text-[11px] text-zinc-400">{e.label}</p>
-                        <p className="mt-1 text-[10px] text-zinc-500">{e.time}</p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
 
           <section className="mb-6 flex justify-center">
             <article
