@@ -94,20 +94,20 @@ const departmentConfigs: DepartmentConfig[] = [
 
 const seeds: Agent[] = [
   { id: "a1", name: "Panda", role: "Chief of Staff", model: "Codex", status: "working", last_active: "just now", mission: "Route priorities and enforce execution contracts." },
-  { id: "a2", name: "Sentinel", role: "Ops Control", model: "Kimi", status: "working", last_active: "just now", mission: "Own heartbeat/crons integrity and raise reliability alerts." },
+  { id: "a2", name: "Sentinel", role: "Ops Control", model: "Codex", status: "working", last_active: "just now", mission: "Own heartbeat/crons integrity and raise reliability alerts." },
   { id: "a3", name: "Forge", role: "Kepter Release", model: "Codex", status: "working", last_active: "today", mission: "Drive TestFlight blockers to release-ready state." },
-  { id: "a4", name: "Mr X", role: "Social Execution", model: "Kimi", status: "idle", last_active: "today", mission: "Produce and track daily social outputs." },
-  { id: "a5", name: "Atlas", role: "Research", model: "Sonnet", status: "idle", last_active: "today", mission: "Support launch decisions with targeted research." },
+  { id: "a4", name: "Mr X", role: "Social Execution", model: "Codex", status: "idle", last_active: "today", mission: "Produce and track daily social outputs." },
+  { id: "a5", name: "Atlas", role: "Research", model: "Codex", status: "idle", last_active: "today", mission: "Support launch decisions with targeted research." },
 ];
 
 const blank = { name: "", role: "", model: "Kimi", status: "idle" as AgentStatus, mission: "" };
 
 const roleModelDefaults: Record<string, string> = {
   "Chief of Staff": "Codex",
-  "Ops Control": "Kimi",
+  "Ops Control": "Codex",
   "Kepter Release": "Codex",
-  "Social Execution": "Kimi",
-  Research: "Sonnet",
+  "Social Execution": "Codex",
+  Research: "Codex",
 };
 
 function modelLabel(model: string) {
