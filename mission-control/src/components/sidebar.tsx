@@ -25,11 +25,13 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-zinc-800/80 bg-[#0d0d10] p-5 lg:block">
-      <div className="mb-6 flex items-center gap-2">
-        <div className="h-7 w-7 rounded-md bg-violet-500/90" />
-        <p className="text-sm font-semibold tracking-wide">Mission Control</p>
+    <aside className="hidden w-64 shrink-0 border-r border-zinc-800/80 bg-[#070709] p-4 lg:block">
+      <div className="mb-4 flex items-center gap-2 px-1">
+        <div className="h-6 w-6 rounded bg-zinc-200" />
+        <p className="text-sm font-medium tracking-tight text-zinc-100">Mission Control</p>
       </div>
+
+      <div className="mb-4 rounded-md border border-zinc-800 bg-zinc-950/60 px-2.5 py-2 text-xs text-zinc-500">Search</div>
 
       <nav className="space-y-1">
         {navItems.map((item) => {

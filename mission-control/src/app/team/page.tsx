@@ -33,8 +33,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "ops-control",
     title: "Ops Control",
-    accent: "from-amber-800/40 via-orange-900/20 to-zinc-950",
-    badge: "text-amber-200 bg-amber-500/20 border border-amber-400/30",
+    accent: "bg-[#0b0b0e] border-l-2 border-amber-400/70",
+    badge: "text-zinc-200 bg-zinc-800 border border-zinc-700",
     leadName: "Sentinel",
     fallbackRole: "Ops Control Lead",
     modelDefault: "Kimi",
@@ -63,8 +63,8 @@ const departmentConfigs: DepartmentConfig[] = [
   {
     key: "social-execution",
     title: "Social Execution",
-    accent: "from-pink-800/40 via-rose-900/20 to-zinc-950",
-    badge: "text-pink-200 bg-pink-500/20 border border-pink-400/30",
+    accent: "bg-[#0b0b0e] border-l-2 border-pink-400/70",
+    badge: "text-zinc-200 bg-zinc-800 border border-zinc-700",
     leadName: "Mr X",
     fallbackRole: "Social Lead",
     modelDefault: "Kimi",
@@ -82,7 +82,7 @@ const departmentConfigs: DepartmentConfig[] = [
     badge: "text-violet-200 bg-violet-500/20 border border-violet-400/30",
     leadName: "Atlas",
     fallbackRole: "Research Lead",
-    modelDefault: "Sonnet",
+    modelDefault: "Codex",
     capabilities: [
       "AI/market intelligence",
       "Trend and competitor tracking",
@@ -227,19 +227,15 @@ export default function TeamPage() {
       <div className="flex min-h-screen w-full">
         <Sidebar />
         <main className="flex-1 px-5 py-6 md:px-8 md:py-8">
-          <header className="mb-6 rounded-3xl border border-zinc-800/80 bg-gradient-to-r from-violet-900/40 via-indigo-900/25 to-zinc-950 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Team</p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-zinc-50">Org Operations</h1>
-            <p className="mt-2 text-sm text-zinc-300">
-              {chief.name} · {chief.role} · {modelLabel(chief.model)}
-            </p>
+          <header className="mb-6 border-b border-zinc-800 pb-4">
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">Team</p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-zinc-100">Org Operations</h1>
+            <p className="mt-1 text-sm text-zinc-400">{chief.name} · {chief.role} · {modelLabel(chief.model)}</p>
           </header>
 
 
           <section className="mb-6 flex justify-center">
-            <article
-              className="w-full max-w-[420px] rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-violet-800/35 via-indigo-900/20 to-zinc-950 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
-            >
+            <article className="w-full max-w-[420px] rounded-xl border border-zinc-800 bg-[#0b0b0e] p-5">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-semibold tracking-tight">Chief of Staff</p>
@@ -291,7 +287,7 @@ export default function TeamPage() {
               const leadStatus = lead?.status || "idle";
 
               return (
-                <article key={cfg.key} className={`rounded-3xl border border-zinc-800/80 bg-gradient-to-b ${cfg.accent} p-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}>
+                <article key={cfg.key} className={`rounded-xl border border-zinc-800 ${cfg.accent} p-5`}>
                   <div className="mb-4 flex items-center justify-between">
                     <div>
                       <p className="text-2xl font-semibold tracking-tight">{cfg.title}</p>
@@ -329,3 +325,6 @@ export default function TeamPage() {
     </div>
   );
 }
+
+
+
