@@ -31,18 +31,48 @@ type DepartmentConfig = {
 
 const departmentConfigs: DepartmentConfig[] = [
   {
-    key: "engineering",
-    title: "Engineering",
+    key: "ops-control",
+    title: "Ops Control",
+    accent: "from-amber-800/40 via-orange-900/20 to-zinc-950",
+    badge: "text-amber-200 bg-amber-500/20 border border-amber-400/30",
+    leadName: "Sentinel",
+    fallbackRole: "Ops Control Lead",
+    modelDefault: "Kimi",
+    capabilities: [
+      "Heartbeat and cron integrity",
+      "Stale-task detection",
+      "System reliability alerts",
+      "Daily efficiency score",
+    ],
+  },
+  {
+    key: "kepter-release",
+    title: "Kepter Release",
     accent: "from-sky-800/40 via-indigo-900/20 to-zinc-950",
     badge: "text-sky-200 bg-sky-500/20 border border-sky-400/30",
     leadName: "Forge",
-    fallbackRole: "Engineering Lead",
+    fallbackRole: "Release Lead",
     modelDefault: "Codex",
     capabilities: [
-      "Mission Control feature delivery",
-      "Stability and bug fixes",
-      "Integration workflows",
-      "Performance and UX improvements",
+      "TestFlight blocker triage",
+      "Go/no-go release checks",
+      "Bug-to-task conversion",
+      "Hotfix release flow",
+    ],
+  },
+  {
+    key: "social-execution",
+    title: "Social Execution",
+    accent: "from-pink-800/40 via-rose-900/20 to-zinc-950",
+    badge: "text-pink-200 bg-pink-500/20 border border-pink-400/30",
+    leadName: "Mr X",
+    fallbackRole: "Social Lead",
+    modelDefault: "Kimi",
+    capabilities: [
+      "Weekly content planning",
+      "Daily ready-to-post assets",
+      "Posting cadence tracking",
+      "Performance iteration",
     ],
   },
   {
@@ -60,88 +90,24 @@ const departmentConfigs: DepartmentConfig[] = [
       "Decision support briefs",
     ],
   },
-  {
-    key: "security",
-    title: "Security & Ops",
-    accent: "from-amber-800/40 via-orange-900/20 to-zinc-950",
-    badge: "text-amber-200 bg-amber-500/20 border border-amber-400/30",
-    leadName: "Sentinel",
-    fallbackRole: "Security Lead",
-    modelDefault: "Kimi",
-    capabilities: [
-      "Security posture checks",
-      "Access and token hygiene",
-      "Infrastructure review",
-      "Risk and hardening actions",
-    ],
-  },
-  {
-    key: "social",
-    title: "Content & Social",
-    accent: "from-pink-800/40 via-rose-900/20 to-zinc-950",
-    badge: "text-pink-200 bg-pink-500/20 border border-pink-400/30",
-    leadName: "Mr X",
-    fallbackRole: "Content Lead",
-    modelDefault: "Kimi",
-    capabilities: [
-      "Social content production",
-      "Post calendar execution",
-      "Creative iteration",
-      "Campaign copy testing",
-    ],
-  },
-  {
-    key: "finance",
-    title: "Finance",
-    accent: "from-emerald-800/40 via-teal-900/20 to-zinc-950",
-    badge: "text-emerald-200 bg-emerald-500/20 border border-emerald-400/30",
-    leadName: "Ledger",
-    fallbackRole: "Finance Lead",
-    modelDefault: "Kimi",
-    capabilities: [
-      "Subscription tracking",
-      "Renewal and spend monitoring",
-      "Savings identification",
-      "Payment operations",
-    ],
-  },
-  {
-    key: "outreach",
-    title: "Outreach",
-    accent: "from-orange-800/40 via-red-900/20 to-zinc-950",
-    badge: "text-orange-200 bg-orange-500/20 border border-orange-400/30",
-    leadName: "Vector",
-    fallbackRole: "Outreach Lead",
-    modelDefault: "Kimi",
-    capabilities: [
-      "Cold outreach execution",
-      "Sequence optimization",
-      "Prospect follow-up systems",
-      "Pipeline hygiene",
-    ],
-  },
 ];
 
 const seeds: Agent[] = [
-  { id: "a1", name: "Panda", role: "Chief of Staff", model: "Codex", status: "working", last_active: "just now", mission: "Route tasks, enforce priorities, and govern model spend." },
-  { id: "a2", name: "Mr X", role: "Social Media", model: "Kimi", status: "idle", last_active: "today", mission: "Social strategy and content execution." },
-  { id: "a3", name: "Atlas", role: "Research", model: "Sonnet", status: "idle", last_active: "today", mission: "AI, startup, and marketing intelligence." },
-  { id: "a4", name: "Forge", role: "Engineering", model: "Codex", status: "working", last_active: "just now", mission: "Keep Mission Control moving and stable." },
-  { id: "a5", name: "Vector", role: "Outreach", model: "Kimi", status: "idle", last_active: "today", mission: "Outreach systems and conversion tuning." },
-  { id: "a6", name: "Ledger", role: "Finance", model: "Kimi", status: "review", last_active: "today", mission: "Manage subscriptions and payment efficiency." },
-  { id: "a7", name: "Sentinel", role: "Security/Ops", model: "Kimi", status: "idle", last_active: "today", mission: "Run periodic hardening and risk checks." },
+  { id: "a1", name: "Panda", role: "Chief of Staff", model: "Codex", status: "working", last_active: "just now", mission: "Route priorities and enforce execution contracts." },
+  { id: "a2", name: "Sentinel", role: "Ops Control", model: "Kimi", status: "working", last_active: "just now", mission: "Own heartbeat/crons integrity and raise reliability alerts." },
+  { id: "a3", name: "Forge", role: "Kepter Release", model: "Codex", status: "working", last_active: "today", mission: "Drive TestFlight blockers to release-ready state." },
+  { id: "a4", name: "Mr X", role: "Social Execution", model: "Kimi", status: "idle", last_active: "today", mission: "Produce and track daily social outputs." },
+  { id: "a5", name: "Atlas", role: "Research", model: "Sonnet", status: "idle", last_active: "today", mission: "Support launch decisions with targeted research." },
 ];
 
 const blank = { name: "", role: "", model: "Kimi", status: "idle" as AgentStatus, mission: "" };
 
 const roleModelDefaults: Record<string, string> = {
   "Chief of Staff": "Codex",
-  "Social Media": "Kimi",
+  "Ops Control": "Kimi",
+  "Kepter Release": "Codex",
+  "Social Execution": "Kimi",
   Research: "Sonnet",
-  Engineering: "Codex",
-  Outreach: "Kimi",
-  Finance: "Kimi",
-  "Security/Ops": "Kimi",
 };
 
 function modelLabel(model: string) {
