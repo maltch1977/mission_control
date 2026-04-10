@@ -226,10 +226,6 @@ export default function MemoryPage() {
             <h1 className="text-3xl font-semibold tracking-tight text-zinc-50">Journal Memory</h1>
           </header>
 
-          <section className="mb-5 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4">
-            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda what to remember and it will be written to memory for you.</p>
-          </section>
-
           <div className="grid gap-5 xl:grid-cols-[380px_1fr]">
             <aside className="rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4">
               <input
@@ -259,7 +255,7 @@ export default function MemoryPage() {
               <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3.5">
                 <input value={longTerm.title} onChange={(e) => setLongTerm((p) => ({ ...p, title: e.target.value }))} className="w-full rounded bg-zinc-800 px-2 py-1 text-sm font-semibold" />
                 <textarea value={longTerm.summary} onChange={(e) => setLongTerm((p) => ({ ...p, summary: e.target.value }))} className="mt-2 w-full rounded bg-zinc-800 px-2 py-1 text-xs" rows={3} />
-                <p className="mt-2 text-[11px] text-zinc-500">Long-term memory is assistant-managed.</p>
+
               </div>
 
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Daily Journal</p>

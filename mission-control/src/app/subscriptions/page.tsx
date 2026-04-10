@@ -149,10 +149,6 @@ export default function SubscriptionsPage() {
             <Stat label="Upcoming Renewals" value={String(upcoming.length)} />
           </section>
 
-          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda any new subscription and it will be added for you.</p>
-          </section>
-
           <div className="grid gap-4 xl:grid-cols-[1fr_350px]">
             <section className="rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
               <h2 className="mb-3 text-sm font-semibold">Subscription List</h2>

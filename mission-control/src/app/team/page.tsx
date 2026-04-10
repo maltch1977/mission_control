@@ -235,10 +235,6 @@ export default function TeamPage() {
             </p>
           </header>
 
-          <section className="mb-6 rounded-2xl border border-zinc-800/80 bg-[#0e0e12] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
-            <p className="text-sm text-zinc-300">Manual entry is disabled. Tell Panda what to add/update and Mission Control will be updated for you.</p>
-          </section>
-
 
           <section className="mb-6 flex justify-center">
             <article

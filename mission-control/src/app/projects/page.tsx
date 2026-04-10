@@ -159,10 +159,6 @@ export default function ProjectsPage() {
             </p>
           </header>
 
-          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <p className="text-sm text-zinc-300">Manual entry disabled. Tell Panda what project to add/update and it will be synced here.</p>
-          </section>
-
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {projectCards.map((project) => (
               <article

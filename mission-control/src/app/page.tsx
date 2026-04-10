@@ -699,10 +699,6 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-3">
-            <p className="text-sm text-zinc-300">Manual task entry is disabled. Tell Panda what to add/update and Mission Control will be synced for you.</p>
-          </section>
-
           <section className="mb-2 flex items-center gap-2 text-sm">
             <span className="text-zinc-400">Owner:</span>
             {(["all", "Chad", "Panda"] as OwnerFilter[]).map((owner) => (
