@@ -5,8 +5,7 @@ import { Sidebar } from "@/components/sidebar";
 type CronItem = {
   name: string;
   cadence: string;
-  utc: string;
-  cst: string;
+  localTime: string;
   purpose: string;
   id: string;
   status: "Active" | "Paused";
@@ -16,17 +15,15 @@ const hourly: CronItem[] = [
   {
     name: "Telegram health watchdog",
     cadence: "Every 10 minutes",
-    utc: "*/10 * * * *",
-    cst: "Every 10 minutes",
+    localTime: "Every 10 minutes",
     purpose: "Watches gateway logs for errors and health issues",
     id: "60a03d8e-2d05-49fc-b232-b4a40d931131",
     status: "Active",
   },
   {
     name: "Hourly ops log snapshot",
-    cadence: "Hourly at :05",
-    utc: "5 * * * *",
-    cst: "Hourly at :05",
+    cadence: "Hourly",
+    localTime: "At :05 each hour",
     purpose: "Appends compact ops snapshot to daily memory",
     id: "9546de95-3587-4a46-8592-31a7400ff697",
     status: "Active",
@@ -37,8 +34,7 @@ const daily: CronItem[] = [
   {
     name: "Nightly memory digest",
     cadence: "Daily",
-    utc: "07:15 UTC",
-    cst: "01:15 CST (UTC-6)",
+    localTime: "1:15 AM",
     purpose: "Curated memory rollup + next-day top priorities",
     id: "bd9cb68d-1c53-4f94-933c-a6ef0ae087d3",
     status: "Active",
@@ -56,12 +52,12 @@ export default function CronsPage() {
             <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">Scheduler</p>
             <h1 className="mt-1 text-4xl font-semibold tracking-tight">Crons</h1>
             <p className="mt-2 text-sm text-zinc-400">
-              Organized by frequency with UTC and your timezone (CST, UTC-6).
+              Local-time schedule only. Everything here is shown in your timezone.
             </p>
           </header>
 
           <section className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-            <Stat label="Timezone" value="CST (UTC-6)" />
+            <Stat label="Timezone" value="CST" />
             <Stat label="Hourly Jobs" value={String(hourly.length)} />
             <Stat label="Daily Jobs" value={String(daily.length)} />
           </section>
@@ -107,8 +103,7 @@ function CronCard({ job }: { job: CronItem }) {
       </div>
       <p className="text-xs text-zinc-400">{job.purpose}</p>
       <p className="mt-2 text-xs text-zinc-500">Cadence: {job.cadence}</p>
-      <p className="text-xs text-zinc-500">UTC: {job.utc}</p>
-      <p className="text-xs text-zinc-500">CST: {job.cst}</p>
+      <p className="text-xs text-zinc-500">Runs: {job.localTime} (local)</p>
       <p className="mt-1 text-[11px] text-zinc-600">ID: {job.id}</p>
     </article>
   );
