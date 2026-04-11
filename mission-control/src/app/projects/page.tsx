@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { supabase } from "@/lib/supabase";
 
@@ -24,24 +23,36 @@ type ProjectMeta = {
   priority: "high" | "medium" | "low";
 };
 
+type Track = {
+  key: "mobile" | "admin" | "sports";
+  label: string;
+  description: string;
+};
+
+const TRACKS: Track[] = [
+  { key: "mobile", label: "Kepter Mobile", description: "Phone-first website creation and launch" },
+  { key: "admin", label: "Kepter Web/Admin", description: "Ops/admin surface, may merge or deprecate later" },
+  { key: "sports", label: "Kepter Sports", description: "Sports tie-in product line" },
+];
+
 const seedMeta: ProjectMeta[] = [
   {
-    id: "p1",
+    id: "p-kepter-core",
+    name: "Kepter Core",
+    description: "Umbrella product with 3 execution tracks: Mobile, Web/Admin, Sports.",
+    status: "Active",
+    owner: "Chad",
+    priority: "high",
+  },
+  {
+    id: "p-mission-control",
     name: "Mission Control",
-    description: "Central dashboard for tasks, approvals, activity, docs, and planning.",
+    description: "Operator layer for autonomous execution and evidence.",
     status: "Active",
     owner: "Panda",
     priority: "high",
   },
 ];
-
-const blankProject = {
-  name: "",
-  description: "",
-  status: "Planning" as ProjectMeta["status"],
-  owner: "Panda",
-  priority: "medium" as ProjectMeta["priority"],
-};
 
 function statusPill(status: ProjectMeta["status"]) {
   if (status === "Active") return "bg-emerald-900/60 text-emerald-300";
@@ -56,11 +67,8 @@ function priorityPill(priority: ProjectMeta["priority"]) {
 }
 
 export default function ProjectsPage() {
-  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [meta, setMeta] = useState<ProjectMeta[]>(seedMeta);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [draft, setDraft] = useState(blankProject);
 
   useEffect(() => {
     const load = async () => {
@@ -94,114 +102,54 @@ export default function ProjectsPage() {
       return { ...m, linked, done, total, progress };
     });
   }, [meta, tasks]);
-
-  const reset = () => {
-    setDraft(blankProject);
-    setEditingId(null);
-  };
-
-  const submitProject = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!draft.name.trim()) return;
-
-    if (editingId) {
-      const updated = { ...draft, id: editingId, name: draft.name.trim(), description: draft.description.trim() };
-      setMeta((prev) => prev.map((p) => (p.id === editingId ? updated : p)));
-      if (supabase) await supabase.from("projects").upsert(updated);
-      reset();
-      return;
-    }
-
-    const created = {
-      id: crypto.randomUUID(),
-      name: draft.name.trim(),
-      description: draft.description.trim(),
-      status: draft.status,
-      owner: draft.owner,
-      priority: draft.priority,
-    };
-    setMeta((prev) => [created, ...prev]);
-    if (supabase) await supabase.from("projects").insert(created);
-    reset();
-  };
-
-  const beginEdit = (project: ProjectMeta) => {
-    setEditingId(project.id);
-    setDraft({
-      name: project.name,
-      description: project.description,
-      status: project.status,
-      owner: project.owner,
-      priority: project.priority,
-    });
-  };
-
-  const removeProject = async (id: string) => {
-    setMeta((prev) => prev.filter((p) => p.id !== id));
-    if (supabase) await supabase.from("projects").delete().eq("id", id);
-    if (editingId === id) reset();
-  };
-
-  const activeCount = projectCards.filter((p) => p.status === "Active").length;
-  const planningCount = projectCards.filter((p) => p.status === "Planning").length;
-
-  return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100">
-      <div className="flex min-h-screen w-full">
+return (
+    <div className="min-h-screen bg-[#0a0a0c] text-zinc-100">
+      <div className="mx-auto flex w-full max-w-[1400px]">
         <Sidebar />
 
-        <main className="flex-1 p-4 md:p-6">
-          <header className="mb-4">
-            <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Projects</p>
-            <h1 className="text-2xl font-semibold text-zinc-50">Projects</h1>
-            <p className="mt-1 text-sm text-zinc-400">
-              {projectCards.length} total · {activeCount} active · {planningCount} planning
-            </p>
-          </header>
+        <main className="flex-1 p-6 lg:p-8">
+          <div className="mb-6">
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-100">Projects</h1>
+            <p className="mt-1 text-sm text-zinc-400">Database-driven, operator-first, no fluff.</p>
+          </div>
 
-          <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <section className="mb-6 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-zinc-200">Kepter Structure</h2>
+              <span className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300">Umbrella + Tracks</span>
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              {TRACKS.map((track) => (
+                <div key={track.key} className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+                  <p className="text-sm font-medium text-zinc-100">{track.label}</p>
+                  <p className="mt-1 text-xs text-zinc-400">{track.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="grid gap-4 md:grid-cols-2">
             {projectCards.map((project) => (
-              <article
-                key={project.id}
-                onClick={() => router.push(`/projects/${project.id}`)}
-                className="cursor-pointer rounded-xl border border-zinc-800 bg-[#0e0e12] p-4 transition hover:border-zinc-700 hover:bg-zinc-900/60"
-              >
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <h2 className="text-lg font-semibold text-zinc-100">{project.name}</h2>
-                  <span className={`rounded-full px-2 py-1 text-xs ${statusPill(project.status)}`}>{project.status}</span>
-                </div>
-
-                <p className="mb-4 line-clamp-2 text-sm text-zinc-400">{project.description}</p>
-
-                {project.name.toLowerCase() !== "mission control" ? (
-                  <>
-                    <div className="mb-1 flex items-center justify-between text-xs text-zinc-500">
-                      <span>{project.progress}%</span>
-                      <span>{project.done}/{project.total}</span>
-                    </div>
-                    <div className="mb-4 h-2 rounded-full bg-zinc-800">
-                      <div className="h-full rounded-full bg-emerald-400" style={{ width: `${project.progress}%` }} />
-                    </div>
-                  </>
-                ) : (
-                  <div className="mb-4 rounded-lg border border-zinc-800 bg-zinc-900/50 px-2.5 py-2 text-xs text-zinc-400">
-                    Ongoing project. Use active tasks and recent memory context as health indicators.
+              <article key={project.id} className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-zinc-100">{project.name}</h3>
+                    <p className="mt-1 text-xs text-zinc-400">{project.description}</p>
                   </div>
-                )}
-
-                <div className="mb-3 flex items-center gap-2 text-xs">
-                  <span className="rounded-full bg-zinc-800 px-2 py-1 text-zinc-300">{project.owner}</span>
-                  <span className={`rounded-full px-2 py-1 ${priorityPill(project.priority)}`}>{project.priority}</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`rounded-md px-2 py-1 text-[11px] ${statusPill(project.status)}`}>{project.status}</span>
+                    <span className={`rounded-md px-2 py-1 text-[11px] ${priorityPill(project.priority)}`}>{project.priority}</span>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  {project.linked.slice(0, 3).map((t) => (
-                    <p key={t.id} className="text-xs text-zinc-400">• {t.title}</p>
-                  ))}
-                  {project.linked.length === 0 && <p className="text-xs text-zinc-500">No linked tasks yet</p>}
+                <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
+                  <span>Owner: {project.owner}</span>
+                  <span>{project.done}/{project.total} done</span>
                 </div>
 
-                <div className="mt-3 text-[11px] text-zinc-500">Managed by Panda</div>
+                <div className="h-2 overflow-hidden rounded bg-zinc-800">
+                  <div className="h-full bg-zinc-200 transition-all" style={{ width: `${project.progress}%` }} />
+                </div>
               </article>
             ))}
           </section>
