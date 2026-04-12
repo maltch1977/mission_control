@@ -241,7 +241,7 @@ const emptyDraft: TaskDraft = {
   ownerAgent: "Panda",
   modelTier: "cheap",
   role: "operations",
-  project: "",
+  project: "Inbox",
   priority: "med",
   dueDate: "",
   tags: "",
@@ -451,6 +451,8 @@ export default function Home() {
   const submitTask = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const title = taskDraft.title.trim();
+ const project = taskDraft.project.trim();
+ if (!project) return;
     if (!title) return;
 
     const roleLower = taskDraft.role.toLowerCase();
@@ -487,7 +489,7 @@ export default function Home() {
             ownerAgent: taskDraft.ownerAgent,
             modelTier: taskDraft.modelTier,
             role: taskDraft.role,
-            project: taskDraft.project.trim() || "Inbox",
+            project: project,
             priority: taskDraft.priority,
             dueDate: taskDraft.dueDate || undefined,
             tags: parseTags(taskDraft.tags),
@@ -511,7 +513,7 @@ export default function Home() {
       ownerAgent: taskDraft.ownerAgent,
       modelTier: taskDraft.modelTier,
       role: taskDraft.role,
-      project: taskDraft.project.trim() || "Inbox",
+      project: project,
       priority: taskDraft.priority,
       status: matchingRule ? "review" : "backlog",
       updated: nowLabel(),
