@@ -692,7 +692,7 @@ export default function Home() {
                   {workLog.length === 0 ? (
                     <EmptyText text="No work log entries yet." />
                   ) : (
-                    workLog.slice(0, 4).map((w) => <MiniRow key={w.id} title={w.action} meta={`${w.actor} · ${w.project || "General"}`} />)
+                    workLog.slice(0, 4).map((w) => <MiniRow key={w.id} title={w.action} meta={`${w.actor} · ${w.project || "Inbox"}`} />)
                   )}
                 </Panel>
               </div>
