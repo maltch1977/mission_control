@@ -644,11 +644,11 @@ export default function Home() {
           <section className="mb-4 rounded-xl border border-zinc-800 bg-[#0e0e12] p-4">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-semibold">Command Center</h2>
-              <span className="text-xs text-zinc-300">Aggregate snapshot</span>
+              <span className="text-xs text-zinc-300">Now / Needs Attention / Upcoming</span>
             </div>
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="space-y-3">
-                <Panel title="Top Priorities">
+                <Panel title="Now">
                   {topPriorities.length === 0 ? (
                     <EmptyText text="No active priorities." />
                   ) : (
@@ -656,7 +656,7 @@ export default function Home() {
                   )}
                 </Panel>
 
-                <Panel title="Blockers">
+                <Panel title="Needs Attention">
                   {blockers.length === 0 ? (
                     <EmptyText text="No blockers tagged right now." />
                   ) : (
@@ -664,7 +664,7 @@ export default function Home() {
                   )}
                 </Panel>
 
-                <Panel title="Due Soon / Overdue">
+                <Panel title="Upcoming">
                   {dueSoon.length === 0 ? (
                     <EmptyText text="No due-soon items in next 3 days." />
                   ) : (
