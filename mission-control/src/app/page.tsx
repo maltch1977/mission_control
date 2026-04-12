@@ -420,7 +420,21 @@ export default function Home() {
     }
   };
 
-  const resetDraft = () => {
+  const latestMemoryAt = useMemo(() => {
+ if (memoryPulse.length === 0) return null;
+ const raw = memoryPulse[0]?.created_at;
+ if (!raw) return null;
+ const t = new Date(raw).getTime();
+ return Number.isNaN(t) ? null : t;
+}, [memoryPulse]);
+
+const memoryStale = useMemo(() => {
+ if (!latestMemoryAt) return true;
+ const hours = (Date.now() - latestMemoryAt) / (1000 * 60 * 60);
+ return hours > 8;
+}, [latestMemoryAt]);
+
+const resetDraft = () => {
     setTaskDraft(emptyDraft);
     setEditingTaskId(null);
   };
@@ -634,7 +648,19 @@ export default function Home() {
             </div>
           </header>
 
-          <section className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <section className="mb-4">
+ {memoryStale ? (
+ <div className="rounded-xl border border-amber-700/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
+ Needs attention: no new memory entry in the last 8 hours.
+ </div>
+ ) : (
+ <div className="rounded-xl border border-emerald-700/50 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-200">
+ No action needed: memory is fresh.
+ </div>
+ )}
+</section>
+
+<section className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
             <StatCard label="This week" value="19" accent="text-emerald-400" />
             <StatCard label="In progress" value={String(inProgress)} accent="text-violet-400" />
             <StatCard label="Total" value={String(filteredTasks.length)} accent="text-zinc-100" />
